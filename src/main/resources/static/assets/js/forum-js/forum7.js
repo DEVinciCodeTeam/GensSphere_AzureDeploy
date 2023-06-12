@@ -38,7 +38,7 @@ var stompClient = null;
 function connect() {
     username_connect = userName
     if(username_connect) {
-        var socket = new SockJS('http://localhost:8080/websocket');
+        var socket = new SockJS('gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
         stompClient = Stomp.over(socket);
 
