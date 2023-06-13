@@ -1,3 +1,10 @@
+// const API_URL = "https://e818-200-68-187-97.ngrok-free.app";
+const API_URL = "https://gensphere.azurewebsites.net";
+
+const PERFIL_EDITABLE = API_URL.includes("localhost") ? "perfilEditable" : "perfileditable"
+const PERFIL_USUARIO = API_URL.includes("localhost") ? "perfilUsuario" : "perfilusuario"
+const PERFIL_EXTERNO = API_URL.includes("localhost") ? "perfilExterno" : "perfilexterno"
+
 // In this file we grouped all the common functions used within the project
 /*-------------- Reading elements ----------------*/
 function changeHtmlElementsPropById(id, value, prop, testvalue = "none") {
@@ -220,7 +227,7 @@ function buscarPorCorreo(userEmail) {
   return resultados;
 }
 
-if (document.location.pathname.includes("perfilexterno") || document.location.pathname.includes("perfilusuario")) {
+if (document.location.pathname.includes(PERFIL_EXTERNO) || document.location.pathname.includes(PERFIL_USUARIO)) {
 
   const buscarUsuarios = document.getElementById("buscarUsuarios");
 
@@ -282,14 +289,13 @@ const cyrb53 = (str, seed = 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
+
 function sendUserToApi(currentUser) {
 
   console.log("enviando objeto");
 
-  console.log(currentUser)
   $.ajax({
-    //url: "http://localhost:8080/api/save",
-    url: "https://gensphere.azurewebsites.net/api/save",
+    url: `${API_URL}/api/save`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -311,8 +317,7 @@ function userSignUpApi(currentUser) {
   console.log("enviando objeto");
 
   $.ajax({
-    //url: "http://localhost:8080/api/save",
-    url: "https://gensphere.azurewebsites.net/api/save",
+    url: `${API_URL}/api/save`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -341,8 +346,7 @@ function userSignInApi(userEmail, userPassword) {
   console.log("obteniendo objeto");
 
   $.ajax({
-    //url: `http://localhost:8080/api/email/${userEmail}`,
-    url: `https://gensphere.azurewebsites.net/api/email/${userEmail}`,
+    url: `${API_URL}/api/email/${userEmail}`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -369,14 +373,13 @@ function userSignInApi(userEmail, userPassword) {
   });
 }
 
-function updateUserInfoInApi(currentUser) {
+function updateUserInfoInApi(currentUser, move = true) {
 
   console.log("Actualizando objeto");
-  console.log(currentUser)
 
   $.ajax({
-    //url: `http://localhost:8080/api/update/${currentUser.userEmail}`,
-    url: `https://gensphere.azurewebsites.net/api/update/${currentUser.userEmail}`,
+    // url: `http://localhost:8080/api/update/${currentUser.userEmail}`,
+    url: `${API_URL}/api/update/${currentUser.userEmail}`,
     contentType: "application/json",
     headers: {
       'ngrok-skip-browser-warning': 'true'
@@ -387,7 +390,7 @@ function updateUserInfoInApi(currentUser) {
     success: function(updatedCurrentUser) {
       console.log("Objeto Actualizado")
       sessionStorage.setItem("currentUser", JSON.stringify(updatedCurrentUser.usuarioActualizado));
-      window.location.href = "../../sections/perfilUsuario.html";
+      if (move) { window.location.href = "../../sections/perfilUsuario.html" }
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("No se pudo actualizar la informacion del usuario")
@@ -401,8 +404,7 @@ function getAllUsersFromApi() {
   console.log("obteniendo objeto");
 
   $.ajax({
-    url: `https://gensphere.azurewebsites.net/api/list`,
-    //url: `http://localhost:8080/api/save`,
+    url: `${API_URL}/api/list`,
     type: "GET",
     dataType: "json",
     success: function(res) {
@@ -417,8 +419,7 @@ function getFriendProfile(userEmail) {
   console.log("Obteniendo perfil de amigo");
 
   $.ajax({
-    //url: `http://localhost:8080/api/email/${userEmail}`,
-    url: `https://gensphere.azurewebsites.net/api/email/${userEmail}`,
+    url: `${API_URL}/api/email/${userEmail}`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -436,4 +437,27 @@ function getFriendProfile(userEmail) {
     }
 
   });
+}
+
+function sendProfilePicture(img) {
+  $.ajax({
+    type: 'POST',
+    url: `${API_URL}/upload`,
+    data: img,
+    enctype: 'multipart/form-data',
+    cache: false,
+    contentType: false,
+    processData: false,
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    },
+    success: function(data) {
+      console.log("Profile picture loaded");
+      window.location.href = "../../sections/perfilEditable.html";
+    },
+    error: function(data) {
+      console.log("Error loading profile picture");
+    }
+  });
+
 }

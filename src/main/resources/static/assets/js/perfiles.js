@@ -4,17 +4,17 @@
 
 let currentUser;
 
-if (document.location.pathname.includes("perfilexterno")) {
+if (document.location.pathname.includes(PERFIL_EXTERNO)) {
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
 } else {
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
-console.log(currentUser)
+// console.log(currentUser)
 /* const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); */
 const allUsers = JSON.parse(localStorage.getItem("allUsers"));
 
 // ----------------------- Shared IDs ----------------------------------
-changeHtmlElementsPropById("userProfilePicture", currentUser.userProfilePicture, "src")
+changeHtmlElementsPropById("userProfilePicture", `${API_URL}/files/` + currentUser.userProfilePicture, "src")
 changeHtmlElementsPropById("userName", currentUser.userName, "innerHTML");
 changeHtmlElementsPropById("userTitle", currentUser.userTitle, "innerHTML", "Tu título");
 changeHtmlElementsPropById("userLocation", currentUser.userLocation, "innerHTML", "Tu ubicación");
@@ -48,26 +48,18 @@ changeHtmlElementsPropById("userOtherEmailInput", currentUser.userOtherEmail, "v
 
 // ------------- Saving the photo that the user uploads --------------
 
-if (document.location.pathname.includes("perfileditable")) {
-  const img = document.querySelector('#userProfilePicture');
+if (document.location.pathname.includes(PERFIL_EDITABLE)) {
   const file = document.querySelector('#file');
 
   file.addEventListener('change', function() {
-    const allUsers = JSON.parse(localStorage.getItem("allUsers"));
+
     const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    const chosenFile = this.files[0];
-    if (chosenFile) {
-      const reader = new FileReader();
-      reader.addEventListener('load', function() {
-        img.setAttribute('src', reader.result);
-        currentUser.userProfilePicture = reader.result;
-        console.log(allUsers)
-        allUsers[currentUser.userEmail] = currentUser;
-        updateStorageObject('session', 'currentUser', currentUser);
-        updateStorageObject('local', 'allUsers', allUsers)
-      });
-      reader.readAsDataURL(chosenFile);
-    }
+    currentUser["userProfilePicture"] = `${file.files[0].name}`;
+    updateUserInfoInApi(currentUser, false);
+    let formData = new FormData();
+    formData.append("file", file.files[0]);
+    sendProfilePicture(formData);
+    changeHtmlElementsPropById("userProfilePicture", `${API_URL}/files/` + currentUser.userProfilePicture, "src")
   });
 }
 // ---------------- Saving the secondary data perfil editable----------------------------
@@ -101,12 +93,8 @@ if (editProfile !== null) {
       saveElementsOnObject("userGithubLinkInput", "userGithub", currentUser)
       saveElementsOnObject("userLinkedinLinkInput", "userLinkedIn", currentUser)
       saveElementsOnObject("userOtherEmailInput", "userSecondEmail", currentUser)
-
-      // updateStorageObject('session', 'currentUser', currentUser);
-      // updateStorageObject('local', 'allUsers', allUsers)
       updateUserInfoInApi(currentUser);
 
-      // window.location.href = "../../sections/perfilUsuario.html";
     }
   }
 }
