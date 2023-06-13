@@ -27,7 +27,7 @@ import com.gensphere.ProjectoGensphere.storage.StorageService;
 //import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.*;
 import javax.servlet.ServletException;
-import org.apache.commons.io.IOUtils;
+//import org.apache.commons.io.IOUtils;
 
 @RestController
 //@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST}, allowedHeaders = "Content-Type")
@@ -72,14 +72,6 @@ public class FileUploadController {
     @RequestMapping(value = "/imgId/{id}",  produces = "image/jpg")
     public Resource texture(@PathVariable("id") String id) {
         return resourceLoader.getResource("classpath:images/" + id + ".jpg");
-    }
-
-    @CrossOrigin("*")
-    @GetMapping(value = "/imgByteArray/{filename:.+}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] getImageWithMediaType(@PathVariable String filename) throws IOException {
-        InputStream in = getClass()
-                .getResourceAsStream("/images/" + filename );
-        return IOUtils.toByteArray(in);
     }
 
     @CrossOrigin("*")
