@@ -288,8 +288,8 @@ function sendUserToApi(currentUser) {
 
   console.log(currentUser)
   $.ajax({
-    url: "http://localhost:8080/api/save",
-    //url: "https://testgensphere.up.railway.app/api/save",
+    //url: "http://localhost:8080/api/save",
+    url: "https://gensphere.azurewebsites.net/api/save",
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -311,8 +311,8 @@ function userSignUpApi(currentUser) {
   console.log("enviando objeto");
 
   $.ajax({
-    url: "http://localhost:8080/api/save",
-    //url: "https://testgensphere.up.railway.app/api/save",
+    //url: "http://localhost:8080/api/save",
+    url: "https://gensphere.azurewebsites.net/api/save",
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -341,8 +341,8 @@ function userSignInApi(userEmail, userPassword) {
   console.log("obteniendo objeto");
 
   $.ajax({
-    url: `http://localhost:8080/api/email/${userEmail}`,
-    //url: `https://testgensphere.up.railway.app/api/email/${userEmail}`,
+    //url: `http://localhost:8080/api/email/${userEmail}`,
+    url: `https://gensphere.azurewebsites.net/api/email/${userEmail}`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
@@ -375,8 +375,8 @@ function updateUserInfoInApi(currentUser) {
   console.log(currentUser)
 
   $.ajax({
-    url: `http://localhost:8080/api/update/${currentUser.userEmail}`,
-    //url: `https://testgensphere.up.railway.app/api/update/${currentUser.userEmail}`,
+    //url: `http://localhost:8080/api/update/${currentUser.userEmail}`,
+    url: `https://gensphere.azurewebsites.net/api/update/${currentUser.userEmail}`,
     contentType: "application/json",
     headers: {
       'ngrok-skip-browser-warning': 'true'
@@ -401,8 +401,8 @@ function getAllUsersFromApi() {
   console.log("obteniendo objeto");
 
   $.ajax({
-    //url: `https://testgensphere.up.railway.app/api/list`,
-    url: `http://localhost:8080/api/save`,
+    url: `https://gensphere.azurewebsites.net/api/list`,
+    //url: `http://localhost:8080/api/save`,
     type: "GET",
     dataType: "json",
     success: function(res) {
@@ -417,8 +417,8 @@ function getFriendProfile(userEmail) {
   console.log("Obteniendo perfil de amigo");
 
   $.ajax({
-    url: `http://localhost:8080/api/email/${userEmail}`,
-    //url: `https://testgensphere.up.railway.app/api/email/${userEmail}`,
+    //url: `http://localhost:8080/api/email/${userEmail}`,
+    url: `https://gensphere.azurewebsites.net/api/email/${userEmail}`,
     headers: {
       'ngrok-skip-browser-warning': 'true'
     },
