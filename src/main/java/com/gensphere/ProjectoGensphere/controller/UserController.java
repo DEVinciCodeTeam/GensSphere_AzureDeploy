@@ -94,11 +94,17 @@ public class UserController {
         }
 
         try {
-
             use.setUserName(user.getUserName());
             use.setUserCohorte(user.getUserCohorte());
             use.setUserGithub(user.getUserGithub());
             use.setUserLinkedIn(user.getUserLinkedIn());
+            use.setUserSecondEmail(user.getUserSecondEmail());
+            use.setUserLocation(user.getUserLocation());
+            use.setExperienceUser(user.getExperienceUser());
+            use.setAboutUser(user.getAboutUser());
+            use.setUserTitle(user.getUserTitle());
+            use.setUserAge(user.getUserAge());
+            use.setUserProfilePicture(user.getUserProfilePicture());
 
             userActualizado = userService.saveUser(use);
 
