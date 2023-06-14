@@ -32,6 +32,7 @@ signUpForm.onsubmit = function(e) {
       userProfilePicture: "../../assets/img/logo/genspherePP2.png",
     }
     userSignUpApi(testUser);
+
   }
 }
 
@@ -44,5 +45,4 @@ signInForm.onsubmit = function(e) {
   const getUserPassword = cyrb53(document.getElementById("userPasswordLogin").value.trim()).toString();
   userSignInApi(getUserEmail, getUserPassword);
 }
-
 
