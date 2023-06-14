@@ -152,91 +152,102 @@ function initializeChatItems() {
   });
 }
 
-function addUser() {
+async function addUser() {
   // Function to get the user's email from the input field
   function getUserEmail() {
     const inputEmail = document.getElementById("findUserWithEmail").value;
     return inputEmail;
   }
 
-  // Get the user's email and retrieve the user object from local storage
+  // Get the user's email
   const userEmail = getUserEmail();
-  const allUsers = JSON.parse(localStorage.getItem("allUsers"));
-  const user = allUsers[userEmail];
 
-  // Retrieve the current user's email from sessionStorage
-  const currentUserEmail = sessionStorage.getItem("currentUser")
-    ? JSON.parse(sessionStorage.getItem("currentUser")).userEmail
-    : "";
+  try {
+    // Fetch user data from the API
+    const response = await fetch(
+      "https://gensphere.azurewebsites.net/api/list"
+    );
+    const users = await response.json();
 
-  // Check if the user is the same as the current user
-  if (user && user.userEmail === currentUserEmail) {
-    console.log("You cannot add yourself as a user.");
-    return;
-  }
+    // Find the user object with the matching email
+    const user = users.find((user) => user.userEmail === userEmail);
 
-  // If the user object exists
-  if (user) {
-    // Get the user's name
-    const userName = user.userName;
+    // Retrieve the current user's email from sessionStorage
+    const currentUserEmail = sessionStorage.getItem("currentUser")
+      ? JSON.parse(sessionStorage.getItem("currentUser")).userEmail
+      : "";
 
-    // Check if the chat already exists in the local storage
-    const existingChat = chatItems.find((item) => item.name === userName);
-
-    if (existingChat) {
-      console.log(`Chat with "${userName}" already exists.`);
+    // Check if the user is the same as the current user
+    if (user && user.userEmail === currentUserEmail) {
+      console.log("You cannot add yourself as a user.");
       return;
     }
 
-    // Get the user's profile picture
-    const userProfilePicture = user.userProfilePicture;
+    // If the user object exists
+    if (user) {
+      // Get the user's name
+      const userName = user.userName;
 
-    // Create a new chat item for the user
-    const newChatItem = {
-      name: userName,
-      imageSrc: userProfilePicture,
-      messages: [],
-    };
+      // Check if the chat already exists in the local storage
+      const existingChat = chatItems.find((item) => item.name === userName);
 
-    // Add the new chat item to the chatItems array
-    chatItems.unshift(newChatItem);
+      if (existingChat) {
+        console.log(`Chat with "${userName}" already exists.`);
+        return;
+      }
 
-    // Store the updated chatItems array in the local storage
-    localStorage.setItem(getChatItemsKey(), JSON.stringify(chatItems));
+      // Get the user's profile picture
+      const userProfilePicture = user.userProfilePicture;
 
-    // Create a new chat item element for the user
-    const newChatItemElement = createChatItemHTML(newChatItem);
+      // Create a new chat item for the user
+      const newChatItem = {
+        name: userName,
+        imageSrc: userProfilePicture,
+        messages: [],
+      };
 
-    // Prepend the new chat item element to the chat list
-    chatList.prepend(newChatItemElement);
+      // Add the new chat item to the chatItems array
+      chatItems.unshift(newChatItem);
 
-    // Add event listener to the new chat item
-    newChatItemElement.addEventListener("click", function () {
-      document.querySelectorAll(".list-group-item.active").forEach((item) => {
-        item.classList.remove("active");
+      // Store the updated chatItems array in the local storage
+      localStorage.setItem(getChatItemsKey(), JSON.stringify(chatItems));
+
+      // Create a new chat item element for the user
+      const newChatItemElement = createChatItemHTML(newChatItem);
+
+      // Prepend the new chat item element to the chat list
+      chatList.prepend(newChatItemElement);
+
+      // Add event listener to the new chat item
+      newChatItemElement.addEventListener("click", function () {
+        document.querySelectorAll(".list-group-item.active").forEach((item) => {
+          item.classList.remove("active");
+        });
+        newChatItemElement.classList.add("active");
+        messageInput.style.display = "block";
+        sendMessageBtn.style.display = "block";
+        const chatMessagesContainer = container.querySelector("ul");
+        chatMessagesContainer.innerHTML = "";
+        newChatItem.messages.forEach((message) => {
+          const isUserMessage =
+            message.sender ===
+            (sessionStorage.getItem("currentUser")
+              ? JSON.parse(sessionStorage.getItem("currentUser")).userName
+              : "Unknown Sender");
+          const chatMessage = createChatMessageHTML(message, isUserMessage);
+          chatMessagesContainer.appendChild(chatMessage);
+          chatMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+        });
       });
-      newChatItemElement.classList.add("active");
-      messageInput.style.display = "block";
-      sendMessageBtn.style.display = "block";
-      const chatMessagesContainer = container.querySelector("ul");
-      chatMessagesContainer.innerHTML = "";
-      newChatItem.messages.forEach((message) => {
-        const isUserMessage =
-          message.sender ===
-          (sessionStorage.getItem("currentUser")
-            ? JSON.parse(sessionStorage.getItem("currentUser")).userName
-            : "Unknown Sender");
-        const chatMessage = createChatMessageHTML(message, isUserMessage);
-        chatMessagesContainer.appendChild(chatMessage);
-        chatMessage.scrollIntoView({ behavior: "smooth", block: "end" });
-      });
-    });
 
-    // Trigger the click event to simulate the initial selection of the new chat item
-    newChatItemElement.click();
+      // Trigger the click event to simulate the initial selection of the new chat item
+      newChatItemElement.click();
 
-    console.log(`User "${userName}" added successfully.`);
+      console.log(`User "${userName}" added successfully.`);
+    } else {
+      console.log("User not found.");
+    }
+  } catch (error) {
+    console.log("An error occurred while fetching user data:", error);
   }
 }
-
-addUser();
