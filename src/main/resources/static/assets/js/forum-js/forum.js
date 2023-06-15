@@ -29,13 +29,14 @@ function appendObjectToLocalStorage(allData) {
 // Get the current user name from sessionStorage
 const currentUser = sessionStorage.getItem("currentUser");
 const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
+const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
 
 //----------Funcion para conectar al Usuario al Socket
 var stompClient = null;
 
 function connect() {
     username_connect = userName
-    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+currentUser.userProfilePicture;
+    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userProfilePicture;
     if(username_connect) {
         var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
