@@ -1,3 +1,4 @@
+getJsonFromApi("forum1Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana1", postData: [] };
 
@@ -24,6 +25,7 @@ let postReplyIdCounter = 1;
 function appendObjectToLocalStorage(allData) {
   const element = allData;
   localStorage.setItem("forum1Posts", JSON.stringify(element));
+  updateForumObject("forum1Posts");
 }
 
 // Get the current user name from sessionStorage
