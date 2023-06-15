@@ -5,6 +5,8 @@ public class ChatMessage {
     private String sender;
 
     private String profilepicture;
+
+    private String email;
     private MessageType type;
 
     public enum MessageType {
@@ -41,5 +43,13 @@ public class ChatMessage {
 
     public void setProfilepicture(String profilepicture) {
         this.profilepicture = profilepicture;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

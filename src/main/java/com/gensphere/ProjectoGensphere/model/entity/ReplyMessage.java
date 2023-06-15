@@ -5,6 +5,8 @@ public class ReplyMessage {
     private String sender;
 
     private String profilepicture;
+
+    private String email;
     private int postId;
     private MessageType type;
 
@@ -50,5 +52,13 @@ public class ReplyMessage {
 
     public void setProfilepicture(String profilepicture) {
         this.profilepicture = profilepicture;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
