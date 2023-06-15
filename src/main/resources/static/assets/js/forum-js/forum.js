@@ -1,3 +1,6 @@
+
+const API_URL = "https://gensphere.azurewebsites.net";
+
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana1", postData: [] };
 
@@ -35,6 +38,7 @@ var stompClient = null;
 
 function connect() {
     username_connect = userName
+    username_profilepicture = API_URL+"/"+"files/"+userName.userProfilePicture;
     if(username_connect) {
         var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
@@ -77,6 +81,7 @@ function addPost(event){
           var chatMessage = {
               sender: username_connect,
               content: postInput,
+              profilepicture:username_profilepicture,
               type: 'CHAT'
           };
 
@@ -110,7 +115,7 @@ function onMessageReceived(payload) {
 
   // Crear un elemento de imagen para la publicación
   const postImage = document.createElement("img");
-  postImage.src = getUserPP();
+  postImage.src = message.profilepicture;
   postImage.classList.add("rounded-circle");
   postImage.classList.add("me-3");
   postImage.classList.add("shadow-1-strong");
@@ -224,6 +229,7 @@ function addReply(event){
             sender: username_connect,
             content: replyText,
             postId:replyId,
+            profilepicture:username_profilepicture,
             type: 'CHAT'
         };
         stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
@@ -244,7 +250,7 @@ function onMessageReceived_Reply(payload) {
   replyContentDiv.classList.add("reply-content");
 
   const replyImage = document.createElement("img");
-  replyImage.src = getUserPP();
+  replyImage.src = message.profilepicture;
   replyImage.classList.add("rounded-circle");
   replyImage.classList.add("me-3");
   replyImage.classList.add("shadow-1-strong");

@@ -3,6 +3,8 @@ package com.gensphere.ProjectoGensphere.model.entity;
 public class ChatMessage {
     private String content;
     private String sender;
+
+    private String profilepicture;
     private MessageType type;
 
     public enum MessageType {
@@ -31,5 +33,13 @@ public class ChatMessage {
 
     public void setType(MessageType type) {
         this.type = type;
+    }
+
+    public String getProfilepicture() {
+        return profilepicture;
+    }
+
+    public void setProfilepicture(String profilepicture) {
+        this.profilepicture = profilepicture;
     }
 }

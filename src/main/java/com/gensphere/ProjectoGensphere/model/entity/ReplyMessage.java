@@ -4,6 +4,7 @@ public class ReplyMessage {
     private String content;
     private String sender;
 
+    private String profilepicture;
     private int postId;
     private MessageType type;
 
@@ -41,5 +42,13 @@ public class ReplyMessage {
 
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+
+    public String getProfilepicture() {
+        return profilepicture;
+    }
+
+    public void setProfilepicture(String profilepicture) {
+        this.profilepicture = profilepicture;
     }
 }
