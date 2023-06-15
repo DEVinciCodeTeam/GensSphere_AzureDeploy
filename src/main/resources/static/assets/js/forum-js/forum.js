@@ -25,6 +25,7 @@ let postReplyIdCounter = 1;
 function appendObjectToLocalStorage(allData) {
   const element = allData;
   localStorage.setItem("forum1Posts", JSON.stringify(element));
+  sessionStorage.setItem("forum1Posts", JSON.stringify(element));
   updateForumObject("forum1Posts");
 }
 
