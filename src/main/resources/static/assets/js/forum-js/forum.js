@@ -30,6 +30,7 @@ function appendObjectToLocalStorage(allData) {
 const currentUser = sessionStorage.getItem("currentUser");
 const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
 const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
+const userEmail = currentUser ? JSON.parse(currentUser).userEmail : "Anonymous";
 
 //----------Funcion para conectar al Usuario al Socket
 var stompClient = null;
@@ -37,6 +38,7 @@ var stompClient = null;
 function connect() {
     username_connect = userName
     username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userProfilePicture;
+    user_email = userEmail;
     if(username_connect) {
         var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
@@ -80,6 +82,7 @@ function addPost(event){
               sender: username_connect,
               content: postInput,
               profilepicture:username_profilepicture,
+              email:user_email,
               type: 'CHAT'
           };
 
@@ -191,7 +194,7 @@ function onMessageReceived(payload) {
     "post-header-date": postDate.textContent,
     "post-header-text": message.content,
     "post-header-pp": message.profilepicture,
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "userEmail": message.email
   };
 
   const postData = {
@@ -228,6 +231,7 @@ function addReply(event){
             content: replyText,
             postId:replyId,
             profilepicture:username_profilepicture,
+            email:user_email,
             type: 'CHAT'
         };
         stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
@@ -312,7 +316,7 @@ function onMessageReceived_Reply(payload) {
     "reply-date": replyDate.textContent,
     "reply-text": message.content,
     "reply-pp": message.profilepicture,
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "userEmail": message.email
   };
 
   const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
