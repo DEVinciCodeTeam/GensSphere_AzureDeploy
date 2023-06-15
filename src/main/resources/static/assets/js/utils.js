@@ -437,7 +437,7 @@ function getFriendProfile(userEmail) {
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El usuario no existe")
-      sessionStorage.removeItem("friedProfile")
+      sessionStorage.removeItem("friendProfile")
     }
 
   });

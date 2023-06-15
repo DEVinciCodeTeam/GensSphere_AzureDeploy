@@ -1,5 +1,8 @@
 const friendProfile = JSON.parse(sessionStorage.getItem("friendProfile"));
-changeHtmlElementsPropById("findUserWithEmail", friendProfile.userEmail, "value");
+if(friendProfile != undefined){
+ changeHtmlElementsPropById("findUserWithEmail", friendProfile.userEmail, "value");
+}
+
 // Get the necessary elements
 const container = document.getElementById("chatContainer");
 const sendMessageBtn = document.getElementById("sendMessageBtn");
