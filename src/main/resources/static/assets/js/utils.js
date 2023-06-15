@@ -246,7 +246,7 @@ if (document.location.pathname.includes(PERFIL_EXTERNO) || document.location.pat
 }
 function getUserPP() {
   temporalCurrentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  return (API_URL+temporalCurrentUser.userProfilePicture)
+  return (API_URL+"/"+"files/"+temporalCurrentUser.userProfilePicture)
 }
 
 function getUserEmail() {
