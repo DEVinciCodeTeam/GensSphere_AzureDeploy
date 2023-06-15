@@ -510,7 +510,7 @@ function getJsonFromApi(filename) {
     dataType: "json",
     success: function(jsonFile) {
       console.log("Archivo JSON cargado!")
-      sessionStorage.setItem(filename.split("."), JSON.stringify(jsonFile))
+      sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
@@ -520,7 +520,7 @@ function getJsonFromApi(filename) {
 }
 
 function updateForumObject(name) {
-  const forumObject = localStorage.getItem(name);
+  const forumObject = sessionStorage.getItem(name);
   sendJsonToApi(forumObject, name + ".json")
 }
 

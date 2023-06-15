@@ -359,7 +359,7 @@ document.addEventListener("DOMContentLoaded", showItems); // DOMContentLoaded = 
 document.addEventListener("DOMContentLoaded", () => {
   // Function to retrieve the information from local storage
   function getDataFromLocalStorage() {
-    const storedData = localStorage.getItem("forum1Posts");
+    const storedData = sessionStorage.getItem("forum1Posts");
     return JSON.parse(storedData);
   }
 
