@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+h5 {
+font-weight: 150;
+}
 
 html body {
   height: 100%;
@@ -80,14 +83,19 @@ h4 {
   visibility: visible;
 }
 
-.blink-me {
-  animation: blinker 1s step-start infinite;
-}
-
 @keyframes blinker {
   50% {
     opacity: 0;
   }
+/* Hover para carrusel */
+  #allPics{
+    transition: 500ms;
+    position:relative ;
+  }
+  #allPics:hover{
+    transform: scale(1.5);
+  }
+
 }
 
 /*--------------------------- Seccion del lado derecho --------------*/

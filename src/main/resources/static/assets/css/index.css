@@ -93,7 +93,8 @@ a {
   margin: 0.5rem;
   font-size: 1rem;
   align-items: center;
-  text-align: center;   
+  text-align: center;
+  padding-bottom:25px;
   justify-content: center; 
    
 }
