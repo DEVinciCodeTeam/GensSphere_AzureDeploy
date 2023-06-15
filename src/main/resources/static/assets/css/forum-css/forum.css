@@ -68,7 +68,7 @@ h4 {
 }
 
 .events-custom {
-  height: 68vh;
+  height: 80vh;
   padding: 10px;
 }
 
@@ -87,6 +87,8 @@ h4 {
   50% {
     opacity: 0;
   }
+}
+
 /* Hover para carrusel */
   #allPics{
     transition: 500ms;
@@ -95,8 +97,6 @@ h4 {
   #allPics:hover{
     transform: scale(1.5);
   }
-
-}
 
 /*--------------------------- Seccion del lado derecho --------------*/
 .mask-custom {
