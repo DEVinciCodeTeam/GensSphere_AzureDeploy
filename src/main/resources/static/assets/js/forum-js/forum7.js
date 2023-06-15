@@ -1,14 +1,15 @@
+getJsonFromApi("forum7Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana7", postData: [] };
 
 function handleMouseEvents(element) {
-  element.addEventListener("mouseenter", function () {
+  element.addEventListener("mouseenter", function() {
     const temp = this.textContent;
     this.textContent = this.getAttribute("data-userEmail");
     this.setAttribute("data-userEmail", temp);
   });
 
-  element.addEventListener("mouseleave", function () {
+  element.addEventListener("mouseleave", function() {
     const temp = this.textContent;
     this.textContent = this.getAttribute("data-userEmail");
     this.setAttribute("data-userEmail", temp);
@@ -24,19 +25,23 @@ let postReplyIdCounter = 1;
 function appendObjectToLocalStorage(allData) {
   const element = allData;
   localStorage.setItem("forum7Posts", JSON.stringify(element));
+  sessionStorage.setItem("forum7Posts", JSON.stringify(element));
+  updateForumObject("forum7Posts");
 }
 
 // Get the current user name from sessionStorage
 const currentUser = sessionStorage.getItem("currentUser");
 const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
-
-/*-------------------------Cambios Erick Inicio------------------------------------*/
+const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
+const userEmail = currentUser ? JSON.parse(currentUser).userEmail : "Anonymous";
 
 //----------Funcion para conectar al Usuario al Socket
 var stompClient = null;
 
 function connect() {
     username_connect = userName
+    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userProfilePicture;
+    user_email = userEmail;
     if(username_connect) {
         var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
@@ -63,6 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
   connect();
 });
 
+
+
+// Función para manejar el evento de clic en el botón "Agregar publicación"
 // Función para manejar el evento de clic en el botón "Publicar"
 
 function addPost(event){
@@ -76,11 +84,13 @@ function addPost(event){
           var chatMessage = {
               sender: username_connect,
               content: postInput,
+              profilepicture:username_profilepicture,
+              email:user_email,
               type: 'CHAT'
           };
 
           stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
-          
+
       }
       event.preventDefault();
 }
@@ -109,7 +119,7 @@ function onMessageReceived(payload) {
 
   // Crear un elemento de imagen para la publicación
   const postImage = document.createElement("img");
-  postImage.src = getUserPP();
+  postImage.src = message.profilepicture;
   postImage.classList.add("rounded-circle");
   postImage.classList.add("me-3");
   postImage.classList.add("shadow-1-strong");
@@ -119,10 +129,7 @@ function onMessageReceived(payload) {
   const nameElement = document.createElement("h3");
   nameElement.textContent = message.sender;
   nameElement.classList.add("post-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
@@ -186,8 +193,8 @@ function onMessageReceived(payload) {
     "post-header-name": nameElement.textContent,
     "post-header-date": postDate.textContent,
     "post-header-text": message.content,
-    "post-header-pp": getUserPP(),
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "post-header-pp": message.profilepicture,
+    "userEmail": message.email
   };
 
   const postData = {
@@ -198,7 +205,7 @@ function onMessageReceived(payload) {
 
   allData.postData.push(postData);
 
-  addPostToUserData(postData);
+  //addPostToUserData(postData);
 
   console.clear();
 
@@ -223,6 +230,8 @@ function addReply(event){
             sender: username_connect,
             content: replyText,
             postId:replyId,
+            profilepicture:username_profilepicture,
+            email:user_email,
             type: 'CHAT'
         };
         stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
@@ -243,7 +252,7 @@ function onMessageReceived_Reply(payload) {
   replyContentDiv.classList.add("reply-content");
 
   const replyImage = document.createElement("img");
-  replyImage.src = getUserPP();
+  replyImage.src = message.profilepicture;
   replyImage.classList.add("rounded-circle");
   replyImage.classList.add("me-3");
   replyImage.classList.add("shadow-1-strong");
@@ -253,10 +262,7 @@ function onMessageReceived_Reply(payload) {
   const nameElement = document.createElement("h3");
   nameElement.textContent = message.sender;
   nameElement.classList.add("reply-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
@@ -306,14 +312,14 @@ function onMessageReceived_Reply(payload) {
     "reply-name": nameElement.textContent,
     "reply-date": replyDate.textContent,
     "reply-text": message.content,
-    "reply-pp": getUserPP(),
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "reply-pp": message.profilepicture,
+    "userEmail": message.email
   };
 
   const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
   postData.replyData.push(replyData);
 
-  addPostToUserData(postData);
+  //addPostToUserData(postData);
 
   // Save the updated data to local storage
   appendObjectToLocalStorage(allData);
@@ -333,13 +339,6 @@ postInput.addEventListener("keypress", function (event) {
   }
 });
 
-/*------------------- Pertinencia de la informacion ----------------------*/
-
-//Funcion para guardar la informacion en Local Storage.
-function appendObjectToLocalStorage(allData) {
-  const element = allData;
-  localStorage.setItem("forum7Posts", JSON.stringify(element));
-}
 
 /*------------------------Animacion de los eventos del lado izquierdo------*/
 
@@ -361,7 +360,7 @@ document.addEventListener("DOMContentLoaded", showItems); // DOMContentLoaded = 
 document.addEventListener("DOMContentLoaded", () => {
   // Function to retrieve the information from local storage
   function getDataFromLocalStorage() {
-    const storedData = localStorage.getItem("forum7Posts");
+    const storedData = sessionStorage.getItem("forum7Posts");
     return JSON.parse(storedData);
   }
 

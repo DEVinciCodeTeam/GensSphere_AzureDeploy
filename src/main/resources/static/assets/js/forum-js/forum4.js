@@ -1,14 +1,15 @@
+getJsonFromApi("forum4Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana4", postData: [] };
 
 function handleMouseEvents(element) {
-  element.addEventListener("mouseenter", function () {
+  element.addEventListener("mouseenter", function() {
     const temp = this.textContent;
     this.textContent = this.getAttribute("data-userEmail");
     this.setAttribute("data-userEmail", temp);
   });
 
-  element.addEventListener("mouseleave", function () {
+  element.addEventListener("mouseleave", function() {
     const temp = this.textContent;
     this.textContent = this.getAttribute("data-userEmail");
     this.setAttribute("data-userEmail", temp);
@@ -24,20 +25,82 @@ let postReplyIdCounter = 1;
 function appendObjectToLocalStorage(allData) {
   const element = allData;
   localStorage.setItem("forum4Posts", JSON.stringify(element));
+  sessionStorage.setItem("forum4Posts", JSON.stringify(element));
+  updateForumObject("forum4Posts");
 }
 
 // Get the current user name from sessionStorage
 const currentUser = sessionStorage.getItem("currentUser");
 const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
+const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
+const userEmail = currentUser ? JSON.parse(currentUser).userEmail : "Anonymous";
+
+//----------Funcion para conectar al Usuario al Socket
+var stompClient = null;
+
+function connect() {
+    username_connect = userName
+    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userProfilePicture;
+    user_email = userEmail;
+    if(username_connect) {
+        var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
+        //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, onConnected, onError);
+    }
+}
+
+function onConnected() {
+    // Subscribe to the Public Topic
+    stompClient.subscribe('/topic/public', onMessageReceived);
+
+    stompClient.subscribe('/topic/public/reply', onMessageReceived_Reply);
+
+}
+
+function onError(error) {
+    alert('No fue posible conectar con el WebSocket! Actualiza tu pagina e intenta nuevamente o entra en contacto con tu administrador.');
+}
+
+//--------------------Activar Sesion de Usuario---------------
+document.addEventListener("DOMContentLoaded", () => {
+  connect();
+});
+
+
 
 // Función para manejar el evento de clic en el botón "Agregar publicación"
-function addPost() {
+// Función para manejar el evento de clic en el botón "Publicar"
+
+function addPost(event){
   const postInput = document.getElementById("post-input").value.trim();
 
   if (postInput === "") {
     alert("Favor de publicar algo.");
     return;
   }
+      if(postInput && stompClient) {
+          var chatMessage = {
+              sender: username_connect,
+              content: postInput,
+              profilepicture:username_profilepicture,
+              email:user_email,
+              type: 'CHAT'
+          };
+
+          stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
+
+      }
+      event.preventDefault();
+}
+
+/*-------------------------Cambios Erick Fin------------------------------------*/
+
+
+// Función para manejar el evento de clic en el botón "Agregar publicación"
+function onMessageReceived(payload) {
+  var message = JSON.parse(payload.body);
 
   // Crear un contenedor para la publicación
   const postContainer = document.createElement("div");
@@ -56,7 +119,7 @@ function addPost() {
 
   // Crear un elemento de imagen para la publicación
   const postImage = document.createElement("img");
-  postImage.src = getUserPP();
+  postImage.src = message.profilepicture;
   postImage.classList.add("rounded-circle");
   postImage.classList.add("me-3");
   postImage.classList.add("shadow-1-strong");
@@ -64,12 +127,9 @@ function addPost() {
   postImage.style.height = "60px";
 
   const nameElement = document.createElement("h3");
-  nameElement.textContent = userName;
+  nameElement.textContent = message.sender;
   nameElement.classList.add("post-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
@@ -91,7 +151,7 @@ function addPost() {
 
   // Crear un elemento para el texto de la publicación
   const postTextElement = document.createElement("p");
-  postTextElement.textContent = postInput;
+  postTextElement.textContent = message.content;
   postTextElement.classList.add("post-text");
   postTextDiv.appendChild(postTextElement);
 
@@ -132,9 +192,9 @@ function addPost() {
     postHeaderId: 1,
     "post-header-name": nameElement.textContent,
     "post-header-date": postDate.textContent,
-    "post-header-text": postInput,
-    "post-header-pp": getUserPP(),
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "post-header-text": message.content,
+    "post-header-pp": message.profilepicture,
+    "userEmail": message.email
   };
 
   const postData = {
@@ -145,7 +205,7 @@ function addPost() {
 
   allData.postData.push(postData);
 
-  addPostToUserData(postData);
+  //addPostToUserData(postData);
 
   console.clear();
 
@@ -153,14 +213,35 @@ function addPost() {
   appendObjectToLocalStorage(allData);
 }
 
-function addReply(event) {
-  const replyInput =
-    event.target.parentNode.querySelector("input[type='text']");
+//-----------------------------------Inicio de cambios en addReply
+function addReply(event){
+  const replyInput = event.target.parentNode.querySelector("input[type='text']");
   const replyText = replyInput.value.trim();
+  const replyInputParent = event.target.parentNode.closest(".post-container");
+  const replyId = replyInputParent.dataset.postid;
+  console.log(replyId);
   if (replyText === "") {
     alert("Por favor comenta algo.");
     return;
   }
+
+    if(replyText && stompClient) {
+        var chatMessage = {
+            sender: username_connect,
+            content: replyText,
+            postId:replyId,
+            profilepicture:username_profilepicture,
+            email:user_email,
+            type: 'CHAT'
+        };
+        stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
+        replyText.value = '';
+    }
+    event.preventDefault();
+}
+
+function onMessageReceived_Reply(payload) {
+  var message = JSON.parse(payload.body);
 
   // Create a containter for the reply
   const replyContainer = document.createElement("div");
@@ -171,7 +252,7 @@ function addReply(event) {
   replyContentDiv.classList.add("reply-content");
 
   const replyImage = document.createElement("img");
-  replyImage.src = getUserPP();
+  replyImage.src = message.profilepicture;
   replyImage.classList.add("rounded-circle");
   replyImage.classList.add("me-3");
   replyImage.classList.add("shadow-1-strong");
@@ -179,12 +260,9 @@ function addReply(event) {
   replyImage.style.height = "60px";
 
   const nameElement = document.createElement("h3");
-  nameElement.textContent = userName;
+  nameElement.textContent = message.sender;
   nameElement.classList.add("reply-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
@@ -201,18 +279,22 @@ function addReply(event) {
   textReplyDiv.classList.add("text-reply");
 
   const replyTextElement = document.createElement("p");
-  replyTextElement.textContent = replyText;
+  replyTextElement.textContent = message.content;
   replyTextElement.classList.add("reply-text");
   textReplyDiv.appendChild(replyTextElement);
 
   replyContainer.appendChild(replyContentDiv);
   replyContainer.appendChild(textReplyDiv);
 
-  const postContainer = event.target.closest(".post-container");
-  const listOfAnswer = postContainer.querySelector(".users_reply__form");
-  listOfAnswer.appendChild(replyContainer);
+  const postContainer = document.querySelector(`.post-container[data-postid="${message.postId}"]`);
+  if (postContainer) {
+    const listOfAnswer = postContainer.querySelector(".users_reply__form");
+    listOfAnswer.appendChild(replyContainer);
+  }
 
-  replyInput.value = "";
+  const replyForm = postContainer.querySelector(".reply__form");
+  const inputElement = replyForm.querySelector("input[type='text']");
+  inputElement.value = "";
 
   const postId = parseInt(postContainer.getAttribute("data-postId")); //No mover de aquí.Trae el id del post
 
@@ -229,19 +311,21 @@ function addReply(event) {
     postHeaderId: parseInt(postContainer.getAttribute("data-postId")),
     "reply-name": nameElement.textContent,
     "reply-date": replyDate.textContent,
-    "reply-text": replyText,
-    "reply-pp": getUserPP(),
-    userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
+    "reply-text": message.content,
+    "reply-pp": message.profilepicture,
+    "userEmail": message.email
   };
 
   const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
   postData.replyData.push(replyData);
 
-  addPostToUserData(postData);
+  //addPostToUserData(postData);
 
   // Save the updated data to local storage
   appendObjectToLocalStorage(allData);
 }
+
+/*---------------Fin de cambios en addReply */
 
 // Add an event listener to the "Publicar" button
 const addPostButton = document.getElementById("add-post-btn");
@@ -255,13 +339,6 @@ postInput.addEventListener("keypress", function (event) {
   }
 });
 
-/*------------------- Pertinencia de la informacion ----------------------*/
-
-//Funcion para guardar la informacion en Local Storage.
-function appendObjectToLocalStorage(allData) {
-  const element = allData;
-  localStorage.setItem("forum4Posts", JSON.stringify(element));
-}
 
 /*------------------------Animacion de los eventos del lado izquierdo------*/
 
@@ -283,7 +360,7 @@ document.addEventListener("DOMContentLoaded", showItems); // DOMContentLoaded = 
 document.addEventListener("DOMContentLoaded", () => {
   // Function to retrieve the information from local storage
   function getDataFromLocalStorage() {
-    const storedData = localStorage.getItem("forum4Posts");
+    const storedData = sessionStorage.getItem("forum4Posts");
     return JSON.parse(storedData);
   }
 
