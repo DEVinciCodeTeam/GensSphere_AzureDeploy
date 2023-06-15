@@ -126,10 +126,7 @@ function onMessageReceived(payload) {
   const nameElement = document.createElement("h3");
   nameElement.textContent = message.sender;
   nameElement.classList.add("post-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
@@ -262,10 +259,7 @@ function onMessageReceived_Reply(payload) {
   const nameElement = document.createElement("h3");
   nameElement.textContent = message.sender;
   nameElement.classList.add("reply-name");
-  nameElement.setAttribute(
-    "data-userEmail",
-    currentUser ? JSON.parse(currentUser).userEmail : ""
-  );
+  nameElement.setAttribute("data-userEmail",message.email);
 
   handleMouseEvents(nameElement);
 
