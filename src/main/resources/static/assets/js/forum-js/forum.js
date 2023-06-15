@@ -1,6 +1,3 @@
-
-const API_URL = "https://gensphere.azurewebsites.net";
-
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana1", postData: [] };
 
@@ -38,7 +35,7 @@ var stompClient = null;
 
 function connect() {
     username_connect = userName
-    username_profilepicture = API_URL+"/"+"files/"+userName.userProfilePicture;
+    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userName.userProfilePicture;
     if(username_connect) {
         var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
