@@ -190,7 +190,7 @@ function onMessageReceived(payload) {
     "post-header-name": nameElement.textContent,
     "post-header-date": postDate.textContent,
     "post-header-text": message.content,
-    "post-header-pp": getUserPP(),
+    "post-header-pp": message.profilepicture,
     userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
   };
 
@@ -311,7 +311,7 @@ function onMessageReceived_Reply(payload) {
     "reply-name": nameElement.textContent,
     "reply-date": replyDate.textContent,
     "reply-text": message.content,
-    "reply-pp": getUserPP(),
+    "reply-pp": message.profilepicture,
     userEmail: currentUser ? JSON.parse(currentUser).userEmail : "",
   };
 
