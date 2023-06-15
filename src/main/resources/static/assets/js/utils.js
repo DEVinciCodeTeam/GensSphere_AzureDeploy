@@ -246,7 +246,7 @@ if (document.location.pathname.includes(PERFIL_EXTERNO) || document.location.pat
 }
 function getUserPP() {
   temporalCurrentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  return (API_URL+"/"+"files/"+temporalCurrentUser.userProfilePicture)
+  return temporalCurrentUser.userProfilePicture
 }
 
 function getUserEmail() {
@@ -437,7 +437,7 @@ function getFriendProfile(userEmail) {
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El usuario no existe")
-      sessionStorage.removeItem("friendProfile")
+      sessionStorage.removeItem("friedProfile")
     }
 
   });
@@ -464,4 +464,89 @@ function sendProfilePicture(img) {
     }
   });
 
+}
+
+function sendJsonToApi(file) {
+  // let formData = new FormData();
+  // formData.append("file", file);
+  // console.log(formData);
+
+  $.ajax({
+    type: 'POST',
+    // method: 'POST',
+    url: `${API_URL}/uploadJson`,
+    enctype: 'multipart/form-data',
+    data: file,
+    contentType: false,
+    processData: false,
+    cache: false,
+    success: function(data) {
+      console.log("JSON loaded");
+    },
+    error: function(data) {
+      console.log("Error loading JSON");
+    }
+  });
+}
+
+
+// function sendJsonToApi(file) {
+//   // let formData = new FormData();
+//   // formData.append("file", file);
+//   // console.log(formData)
+
+//   $.ajax({
+//     type: 'POST',
+//     url: `${API_URL}/uploadJson`,
+//     data: file,
+//     // enctype: 'multipart/form-data',
+//     contentType: false,
+//     processData: false,
+//     cache: false,
+//     // cache: false,
+//     // contentType: false,
+//     // processData: false,
+//     // headers: {
+//     //   'ngrok-skip-browser-warning': 'true'
+//     // },
+//     success: function(data) {
+//       console.log("JSON loaded");
+//     },
+//     error: function(data) {
+//       console.log("Error loading JSON");
+//     }
+//   });
+
+// }
+
+
+function download(content, fileName, contentType) {
+  var a = document.createElement("a");
+  var file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
+
+
+function sendJsonToApi2(file) {
+
+  console.log("enviando objeto");
+
+  $.ajax({
+    url: `${API_URL}/updateJson`,
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    },
+    contentType: "application/json",
+    type: "POST",
+    data: JSON.stringify(file),
+    dataType: "json",
+    success: () => {
+      console.log("Exito");
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Fracaso")
+    }
+  });
 }

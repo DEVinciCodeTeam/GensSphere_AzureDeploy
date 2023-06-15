@@ -207,7 +207,7 @@ async function addUser() {
       // Create a new chat item for the user
       const newChatItem = {
         name: userName,
-        imageSrc: userProfilePicture,
+        imageSrc: "https://gensphere.azurewebsites.net/files/"+userProfilePicture,
         messages: [],
       };
 
