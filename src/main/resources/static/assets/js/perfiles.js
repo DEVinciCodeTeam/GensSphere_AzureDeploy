@@ -1,22 +1,21 @@
 validateCurrentUser();
 getJsonFromApi(getUserEmail() + ".json")
 
+if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
+visualizeUserPosts();
+visualizeCommentedPosts();
+}
+
 // ------------------ Setting user's data ------------------------------
 
 let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
-  window.location.href = "../../sections/perfilExterno.html"
 } else {
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  window.location.href = "../../sections/perfilUsuario.html"
 }
 
-if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
-visualizeUserPosts();
-visualizeCommentedPosts();
-}
 
 // console.log(currentUser)
 /* const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); */
