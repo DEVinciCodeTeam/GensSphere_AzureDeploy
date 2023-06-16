@@ -53,9 +53,9 @@ function connect() {
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
+    stompClient.subscribe('/topic/public4', onMessageReceived);
 
-    stompClient.subscribe('/topic/public/reply', onMessageReceived_Reply);
+    stompClient.subscribe('/topic/public/reply4', onMessageReceived_Reply);
 
 }
 
@@ -89,7 +89,7 @@ function addPost(event){
               type: 'CHAT'
           };
 
-          stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
+          stompClient.send('/app/chat.send4', {}, JSON.stringify(chatMessage));
 
       }
       event.preventDefault();
@@ -234,7 +234,7 @@ function addReply(event){
             email:user_email,
             type: 'CHAT'
         };
-        stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
+        stompClient.send('/app/chat.reply4', {}, JSON.stringify(chatMessage));
         replyText.value = '';
     }
     event.preventDefault();
