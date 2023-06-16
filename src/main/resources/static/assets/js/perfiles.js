@@ -7,10 +7,10 @@ let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
-  window.location.href = "../../../perfilExterno.html"
+  window.location.href = "../../sections/perfilExterno.html"
 } else {
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  window.location.href = "../../../perfilUsuario.html"
+  window.location.href = "../../sections/perfilUsuario.html"
 }
 
 if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
