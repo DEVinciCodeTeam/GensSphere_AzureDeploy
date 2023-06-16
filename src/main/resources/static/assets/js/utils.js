@@ -63,28 +63,26 @@ function saveElementsOnObject(id, prop, objectToUpdate) {
 }
 
 function addPostToUserData(type, postData) {
-  tempAllUsers = JSON.parse(localStorage.getItem("allUsers"));
-  temporalCurrentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  getJsonFromApi(getUserEmail()+".json");
+  console.log(getUserEmail())
+  let userPosts = JSON.parse(sessionStorage.getItem(getUserEmail().split(".")[0]));
+  if (userPosts == undefined) { userPosts = {posts:[], replies:[]}}
   postData.postHeader[0]["post-header-replies"] = postData.replyData.length;
 
   if (type === 'post') {
     console.log("Entra al if")
-    temporalCurrentUser.userPosts.unshift(postData.postHeader[0]);
-
-    sessionStorage.setItem("currentUser", JSON.stringify(temporalCurrentUser));
-
-    tempAllUsers[temporalCurrentUser.userEmail] = temporalCurrentUser;
-
-    localStorage.setItem("allUsers", JSON.stringify(tempAllUsers));
+    userPosts.posts.unshift(postData.postHeader[0]);
+    sendJsonToApi(JSON.stringify(userPosts), getUserEmail()+".json")
+    getJsonFromApi(getUserEmail()+".json");
   } else {
-    temporalCurrentUser.userReplies.unshift(postData.postHeader[0]);
-    tempAllUsers[temporalCurrentUser.userEmail].userReplies.unshift(postData.postHeader[0]);
-    tempAllUsers[postData.postHeader[0]['post-header-userEmail']].userPosts.unshift(postData.postHeader[0]);
-
-    sessionStorage.setItem("currentUser", JSON.stringify(temporalCurrentUser));
-    localStorage.setItem("allUsers", JSON.stringify(tempAllUsers));
+  userPosts.replies.unshift(postData.postHeader[0]);
+  sendJsonToApi(JSON.stringify(userPosts), getUserEmail()+".json")
+  getJsonFromApi(postData.postHeader[0]['userEmail']+".json");
+  console.log(postData.postHeader[0]['userEmail'])
+  const originalPostPerson = JSON.parse(sessionStorage.getItem(postData.postHeader[0]['userEmail'].split(".")[0]));
+  originalPostPerson.posts.unshift(postData.postHeader[0]);
+  sendJsonToApi(JSON.stringify(originalPostPerson), postData.postHeader[0]['userEmail']+".json")
   }
-
 }
 
 const convertStringToHTML = htmlString => {
@@ -132,6 +130,7 @@ function generateCardPost(userName, userPP, text, date, numRespuestas, type = "u
 
 
 function placeCard(userName, userPP, text, date, numRespuestas, type) {
+  console.log("Entramos a placeCard")
   const currentPosts = document.getElementsByClassName(type);
 
   const numOfCurrentPosts = currentPosts.length;
@@ -155,53 +154,72 @@ function placeCard(userName, userPP, text, date, numRespuestas, type) {
 }
 
 function visualizeUserPosts() {
-  if (!document.location.pathname.includes("perfileditable")) {
-    let allUsers = JSON.parse(localStorage.getItem("allUsers"));
+console.log("Entramos a visualize posts")
+  if (!document.location.pathname.includes("perfilEditable")) {
+    console.log("Pasamos perfil editable")
     let currentUser;
-    if (document.location.pathname.includes("perfilexterno")) {
-      const identifiedPerson = JSON.parse(sessionStorage.getItem("identifiedPerson"));
-      currentUser = allUsers[identifiedPerson.userEmail];
+    if (document.location.pathname.includes("perfilExterno")) {
+      console.log("Entramos a prfil externo")
+      const identifiedPerson = JSON.parse(sessionStorage.getItem("friendProfile"));
+      getJsonFromApi(identifiedPerson.userEmail+".json");
+      currentUser = JSON.parse(sessionStorage.getItem("friendProfile")).userEmail;
+      currentUserName = JSON.parse(sessionStorage.getItem("friendProfile")).userName;
     } else {
+    console.log("Entramos a perfil usuario")
       const identifiedPerson = JSON.parse(sessionStorage.getItem("currentUser"));
-      currentUser = allUsers[identifiedPerson.userEmail];
+      getJsonFromApi(identifiedPerson.userEmail+".json");
+      currentUser = getUserEmail();
+      currentUserName = JSON.parse(sessionStorage.getItem("currentUser")).userName;
     }
-    const userPosts = currentUser.userPosts;
+    console.log(currentUser)
+    const userPosts = JSON.parse(sessionStorage.getItem(currentUser.split(".")[0]));
+    console.log(userPosts)
     const approvedPostsText = [];
     const approvedPosts = [];
-    for (let i = 0; i < userPosts.length; i++) {
-      const post = userPosts[i]
+    for (let i = 0; i < userPosts.posts.length; i++) {
+      console.log("Entramos al for")
+      const post = userPosts.posts[i]
       if (!approvedPostsText.includes(post["post-header-text"])) {
+      if (post["post-header-name"] == currentUserName){
+      console.log("entramos al if")
         approvedPostsText.push(post["post-header-text"])
         approvedPosts.push(post)
         console.log([post])
         placeCard(post["post-header-name"], post["post-header-pp"], post["post-header-text"], post["post-header-date"], post["post-header-replies"], "userPosts")
+        }
       }
       if (approvedPosts.length == 10) {
         break;
       }
     }
-    allUsers[currentUser.userEmail].userPosts = approvedPosts;
-    updateStorageObject('local', 'allUsers', allUsers)
+
+    sendJsonToApi(JSON.stringify(approvedPosts, currentUser + ".json"))
 
   }
 }
 
 function visualizeCommentedPosts() {
-  if (!document.location.pathname.includes("perfileditable")) {
-    let allUsers = JSON.parse(localStorage.getItem("allUsers"));
-    let currentUser;
-    if (document.location.pathname.includes("perfilexterno")) {
-      const identifiedPerson = JSON.parse(sessionStorage.getItem("identifiedPerson"));
-      currentUser = allUsers[identifiedPerson.userEmail];
-    } else {
-      const identifiedPerson = JSON.parse(sessionStorage.getItem("currentUser"));
-      currentUser = allUsers[identifiedPerson.userEmail];
-    }
-    const userPosts = currentUser.userReplies;
+  console.log("Entramos a visualize commented posts")
+    if (!document.location.pathname.includes("perfilEditable")) {
+      console.log("Pasamos perfil editable")
+      let currentUser;
+      if (document.location.pathname.includes("perfilExterno")) {
+        console.log("Entramos a prfil externo")
+        const identifiedPerson = JSON.parse(sessionStorage.getItem("friendProfile"));
+        getJsonFromApi(identifiedPerson.userEmail+".json");
+        currentUser = JSON.parse(sessionStorage.getItem("friendProfile")).userEmail;
+      } else {
+      console.log("Entramos a perfil usuario")
+        const identifiedPerson = JSON.parse(sessionStorage.getItem("currentUser"));
+        getJsonFromApi(identifiedPerson.userEmail+".json");
+        currentUser = getUserEmail();
+      }
+      console.log(currentUser)
+      const userPosts = JSON.parse(sessionStorage.getItem(currentUser.split(".")[0]));
     const approvedPostsText = [];
     const approvedPosts = [];
-    for (let i = 0; i < userPosts.length; i++) {
-      const post = userPosts[i]
+    for (let i = 0; i < userPosts.replies.length; i++) {
+      const post = userPosts.replies[i]
       if (!approvedPostsText.includes(post["post-header-text"])) {
         approvedPostsText.push(post["post-header-text"])
         approvedPosts.push(post)
@@ -212,8 +230,7 @@ function visualizeCommentedPosts() {
         break;
       }
     }
-    allUsers[currentUser.userEmail].userReplies = approvedPosts;
-    updateStorageObject('local', 'allUsers', allUsers)
+    sendJsonToApi(JSON.stringify(approvedPosts, currentUser+ ".json"))
 
   }
 }
@@ -530,4 +547,12 @@ function download(content, fileName, contentType) {
   a.href = URL.createObjectURL(file);
   a.download = fileName;
   a.click();
+}
+
+function validateCurrentUser (){
+console.log("Entramos a curentUser")
+console.log(sessionStorage.getItem("currentUser") == undefined)
+    if (sessionStorage.getItem("currentUser") == undefined){
+        window.location.href = "../../sections/login.html";
+    }
 }

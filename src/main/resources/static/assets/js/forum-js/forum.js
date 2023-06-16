@@ -1,3 +1,4 @@
+validateCurrentUser();
 getJsonFromApi("forum1Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana1", postData: [] };
@@ -205,7 +206,7 @@ function onMessageReceived(payload) {
 
   allData.postData.push(postData);
 
-  //addPostToUserData(postData);
+  addPostToUserData("post",postData);
 
   console.clear();
 
@@ -319,7 +320,7 @@ function onMessageReceived_Reply(payload) {
   const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
   postData.replyData.push(replyData);
 
-  //addPostToUserData(postData);
+  addPostToUserData("reply", postData);
 
   // Save the updated data to local storage
   appendObjectToLocalStorage(allData);

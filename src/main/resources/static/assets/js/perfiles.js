@@ -1,5 +1,7 @@
-// visualizeUserPosts();
-// visualizeCommentedPosts();
+validateCurrentUser();
+visualizeUserPosts();
+visualizeCommentedPosts();
+
 // ------------------ Setting user's data ------------------------------
 
 let currentUser;
