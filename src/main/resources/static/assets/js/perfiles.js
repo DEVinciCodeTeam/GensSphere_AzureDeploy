@@ -1,6 +1,9 @@
 validateCurrentUser();
+getJsonFromApi(getUserEmail() + ".json")
+if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
 visualizeUserPosts();
 visualizeCommentedPosts();
+}
 
 // ------------------ Setting user's data ------------------------------
 
