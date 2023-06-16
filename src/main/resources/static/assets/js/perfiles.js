@@ -1,18 +1,25 @@
 validateCurrentUser();
 getJsonFromApi(getUserEmail() + ".json")
 
-if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
-visualizeUserPosts();
-visualizeCommentedPosts();
-}
+const friendProfile =  sessionStorage.getItem("friendProfile")
+const firstVerification = sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined
+const secondVerification = friendProfile.userEmail.split(".")[0]) != undefined
 
 // ------------------ Setting user's data ------------------------------
 
 let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
+  if (secondVerification){
+visualizeUserPosts();
+visualizeCommentedPosts();
+}
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
 } else {
+  if (firstVerification){
+visualizeUserPosts();
+visualizeCommentedPosts();
+}
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
 
