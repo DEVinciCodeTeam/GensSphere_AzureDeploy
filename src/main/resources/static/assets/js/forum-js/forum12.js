@@ -1,4 +1,4 @@
-getJsonFromApi("forum122Posts.json");
+getJsonFromApi("forum12Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana12", postData: [] };
 
