@@ -561,5 +561,5 @@ console.log(sessionStorage.getItem("currentUser") == undefined)
     if (sessionStorage.getItem("currentUser") == undefined){
         window.location.href = "../../sections/login.html";
     }
-}
+}}
 
