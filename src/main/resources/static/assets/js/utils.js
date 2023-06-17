@@ -291,6 +291,21 @@ function transformDates(date) {
   return (monthsToString[dateArray[1]] + ", " + dateArray[0])
 }
 
+function reloadPage() {
+// The last "domLoading" Time //
+  var currentDocumentTimestamp =
+      new Date(performance.timing.domLoading).getTime();
+// Current Time //
+  var now = Date.now();
+// Ten Seconds //
+  var tenSec = 10 * 1000;
+// Plus Ten Seconds //
+  var plusTenSec = currentDocumentTimestamp + tenSec;
+  if (now > plusTenSec) {
+    location.reload();
+  } else {}
+}
+
 const cyrb53 = (str, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
   for (let i = 0, ch; i < str.length; i++) {
@@ -528,7 +543,7 @@ function getJsonFromApi(filename) {
     success: function(jsonFile) {
       console.log("Archivo JSON cargado!")
       sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
-      location.reload()
+      reloadPage()
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
@@ -558,17 +573,3 @@ console.log(sessionStorage.getItem("currentUser") == undefined)
     }
 }
 
-function reloadPage() {
-// The last "domLoading" Time //
-  var currentDocumentTimestamp =
-      new Date(performance.timing.domLoading).getTime();
-// Current Time //
-  var now = Date.now();
-// Ten Seconds //
-  var tenSec = 10 * 1000;
-// Plus Ten Seconds //
-  var plusTenSec = currentDocumentTimestamp + tenSec;
-  if (now > plusTenSec) {
-    location.reload();
-  } else {}
-}
