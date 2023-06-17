@@ -1,9 +1,12 @@
 validateCurrentUser();
 const friendProfileCheck = JSON.parse(sessionStorage.getItem("friendProfile"));
-getJsonFromApi(getUserEmail() + ".json")
+// getJsonFromApi(getUserEmail() + ".json")
+loadUserPosts(getUserEmail() + ".json")
 if (friendProfileCheck != null){
-  getJsonFromApi(friendProfileCheck.userEmail + ".json")
+  // getJsonFromApi(friendProfileCheck.userEmail + ".json")
+  loadUserPosts(friendProfileCheck.userEmail + ".json")
 }
+
 
 
 
@@ -12,18 +15,18 @@ if (friendProfileCheck != null){
 let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
-  if (friendProfileCheck != null) {
-    if (sessionStorage.getItem(friendProfileCheck.userEmail.split(".")[0]) != undefined) {
-      visualizeUserPosts();
-      visualizeCommentedPosts();
-    }
-  }
+  // if (friendProfileCheck != null) {
+  //   if (sessionStorage.getItem(friendProfileCheck.userEmail.split(".")[0]) != undefined) {
+  //     visualizeUserPosts();
+  //     visualizeCommentedPosts();
+  //   }
+  // }
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
 } else {
-  if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
-    visualizeUserPosts();
-    visualizeCommentedPosts();
-  }
+  // if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
+  //   visualizeUserPosts();
+  //   visualizeCommentedPosts();
+  // }
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
 

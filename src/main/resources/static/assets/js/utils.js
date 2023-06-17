@@ -231,7 +231,6 @@ function visualizeCommentedPosts() {
       }
     }
     sendJsonToApi(JSON.stringify(approvedPosts, currentUser+ ".json"))
-    location.reload()
   }
 }
 
@@ -528,6 +527,30 @@ function getJsonFromApi(filename) {
     success: function(jsonFile) {
       console.log("Archivo JSON cargado!")
       sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("El archivo no existe")
+    }
+
+  });
+}
+
+function loadUserPosts(filename) {
+
+  console.log("Obteniendo JSON");
+
+  $.ajax({
+    url: `${API_URL}/filesJson/${filename}`,
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    },
+    type: "GET",
+    dataType: "json",
+    success: function(jsonFile) {
+      console.log("Archivo JSON cargado!")
+      sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
+      visualizeUserPosts();
+      visualizeCommentedPosts();
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
