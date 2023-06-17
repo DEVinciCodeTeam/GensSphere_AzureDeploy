@@ -41,10 +41,10 @@ var stompClient = null;
 
 function connect() {
     username_connect = userName
-    username_profilepicture = "https://gensphere.azurewebsites.net/files/"+userProfilePicture;
+    username_profilepicture = `${API_URL}/files/`+userProfilePicture;
     user_email = userEmail;
     if(username_connect) {
-        var socket = new SockJS('https://gensphere.azurewebsites.net/websocket');
+        var socket = new SockJS(`${API_URL}/websocket`);
         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
         stompClient = Stomp.over(socket);
 
