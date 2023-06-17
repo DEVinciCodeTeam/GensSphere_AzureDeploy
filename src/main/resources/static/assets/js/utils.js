@@ -1,5 +1,5 @@
 // const API_URL = "https://e818-200-68-187-97.ngrok-free.app";
-const API_URL = "https://gensphere.azurewebsites.net";
+const API_URL = "https://gen-sphere.azurewebsites.net";
 
 const PERFIL_EDITABLE = API_URL.includes("localhost") || API_URL.includes("azure") ? "perfilEditable" : "perfileditable"
 const PERFIL_USUARIO = API_URL.includes("localhost") || API_URL.includes("azure") ? "perfilUsuario" : "perfilusuario"
