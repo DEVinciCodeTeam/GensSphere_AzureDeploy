@@ -1,10 +1,7 @@
 validateCurrentUser();
+const friendProfileCheck = JSON.parse(sessionStorage.getItem("friendProfile"));
 getJsonFromApi(getUserEmail() + ".json")
-
-if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
-visualizeUserPosts();
-visualizeCommentedPosts();
-}
+getJsonFromApi(friendProfileCheck.userEmail + ".json")
 
 
 // ------------------ Setting user's data ------------------------------
@@ -12,8 +9,16 @@ visualizeCommentedPosts();
 let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
+  if (sessionStorage.getItem(friendProfileCheck.userEmail.split(".")[0]) != undefined){
+    visualizeUserPosts();
+    visualizeCommentedPosts();
+  }
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
 } else {
+  if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
+    visualizeUserPosts();
+    visualizeCommentedPosts();
+  }
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
 
