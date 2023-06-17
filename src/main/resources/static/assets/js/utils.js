@@ -559,7 +559,7 @@ function loadUserPosts(filename) {
   });
 }
 // ---------------------------------Forums -------------------------------------------
-if (document.location.pathname.includes("forum") {
+if (document.location.pathname.includes("forum")) {
 // Función para manejar el evento de clic en el botón "Agregar publicación"
   function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
