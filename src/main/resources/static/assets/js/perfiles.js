@@ -27,6 +27,7 @@ if (document.location.pathname.includes(PERFIL_EXTERNO)) {
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
 
+location.reload()
 
 // console.log(currentUser)
 /* const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); */
