@@ -1,5 +1,5 @@
 validateCurrentUser();
-getJsonFromApi("forum1Posts.json");
+// getJsonFromApi("forum1Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
 let allData = { id: "Semana1", postData: [] };
 
@@ -502,9 +502,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Fetch data from local storage and populate the wall__container
-  const storedData = getDataFromLocalStorage();
-  if (storedData) {
-    allData = storedData;
-    populateWallContainer(storedData);
-  }
+  // const storedData = getDataFromLocalStorage();
+  // if (storedData) {
+  //   allData = storedData;
+  //   populateWallContainer(storedData);
+  // }
+  loadForumPosts("forum1Posts.json")
 });

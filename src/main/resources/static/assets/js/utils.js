@@ -559,6 +559,33 @@ function loadUserPosts(filename) {
   });
 }
 
+function loadForumPosts(filename) {
+
+  console.log("Obteniendo JSON");
+
+  $.ajax({
+    url: `${API_URL}/filesJson/${filename}`,
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    },
+    type: "GET",
+    dataType: "json",
+    success: function(jsonFile) {
+      console.log("Archivo JSON cargado!")
+      sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
+      const storedData = getDataFromLocalStorage();
+      if (storedData) {
+        allData = storedData;
+        populateWallContainer(storedData);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("El archivo no existe")
+    }
+
+  });
+}
+
 function updateForumObject(name) {
   const forumObject = sessionStorage.getItem(name);
   sendJsonToApi(forumObject, name + ".json")
