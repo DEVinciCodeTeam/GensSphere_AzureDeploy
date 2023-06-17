@@ -559,6 +559,148 @@ function loadUserPosts(filename) {
   });
 }
 
+// Function to retrieve the information from local storage
+function getDataFromLocalStorage() {
+  const storedData = sessionStorage.getItem("forum1Posts");
+  return JSON.parse(storedData);
+}
+
+// Function to populate the wall__container with the retrieved data
+function populateWallContainer(data) {
+  const wallContainer = document.querySelector(".wall__container");
+  wallContainer.innerHTML = "";
+
+  data.postData.forEach((postData) => {
+    const postContainer = document.createElement("div");
+    postContainer.classList.add("post-container");
+    postContainer.setAttribute("data-postId", postData.postDataId);
+
+    postData.postHeader.forEach((postHeader) => {
+      const postHeaderUser = document.createElement("div");
+      postHeaderUser.classList.add("general-post-info");
+
+      const postContentDiv = document.createElement("div");
+      postContentDiv.classList.add("post-content");
+
+      const postImage = document.createElement("img");
+      postImage.src = postHeader["post-header-pp"];
+      postImage.classList.add("rounded-circle");
+      postImage.classList.add("me-3");
+      postImage.classList.add("shadow-1-strong");
+      postImage.style.width = "60px";
+      postImage.style.height = "60px";
+
+      const nameElement = document.createElement("h3");
+      nameElement.textContent = postHeader["post-header-name"];
+      nameElement.setAttribute("data-userEmail", postHeader.userEmail);
+      nameElement.classList.add("post-name");
+
+      nameElement.addEventListener("mouseenter", function () {
+        const temp = this.textContent;
+        this.textContent = this.getAttribute("data-userEmail");
+        this.setAttribute("data-userEmail", temp);
+      });
+
+      nameElement.addEventListener("mouseleave", function () {
+        const temp = this.textContent;
+        this.textContent = this.getAttribute("data-userEmail");
+        this.setAttribute("data-userEmail", temp);
+      });
+
+      const postDate = document.createElement("p");
+      postDate.textContent = postHeader["post-header-date"];
+      postDate.classList.add("post-date");
+
+      postContentDiv.appendChild(postImage);
+      postContentDiv.appendChild(nameElement);
+      postContentDiv.appendChild(postDate);
+
+      postHeaderUser.appendChild(postContentDiv);
+
+      const postTextDiv = document.createElement("div");
+      postTextDiv.classList.add("posttextdiv");
+
+      const postTextElement = document.createElement("p");
+      postTextElement.textContent = postHeader["post-header-text"];
+      postTextElement.classList.add("post-text");
+      postTextDiv.appendChild(postTextElement);
+
+      postHeaderUser.appendChild(postTextDiv);
+
+      postContainer.appendChild(postHeaderUser);
+    });
+    //----------------Se debe crear el users_reply_form dentro del post container aunque no existan replyData----
+    const usersReplyForm = document.createElement("div");
+    usersReplyForm.classList.add("users_reply__form");
+    postContainer.appendChild(usersReplyForm);
+
+    postData.replyData.forEach((replyData) => {
+      const replyContainer = document.createElement("div");
+      replyContainer.classList.add("reply-container");
+
+      const replyContentDiv = document.createElement("div");
+      replyContentDiv.classList.add("reply-content");
+
+      const replyImage = document.createElement("img");
+      replyImage.src = replyData["reply-pp"];
+      replyImage.classList.add("rounded-circle");
+      replyImage.classList.add("me-3");
+      replyImage.classList.add("shadow-1-strong");
+      replyImage.style.width = "60px";
+      replyImage.style.height = "60px";
+
+      const nameElement = document.createElement("h3");
+      nameElement.textContent = replyData["reply-name"];
+      nameElement.setAttribute("data-userEmail", replyData.userEmail);
+      nameElement.classList.add("reply-name");
+
+      nameElement.addEventListener("mouseover", function () {
+        this.textContent = this.getAttribute("data-userEmail");
+      });
+
+      nameElement.addEventListener("mouseout", function () {
+        this.textContent = replyData["reply-name"];
+      });
+
+      const replyDate = document.createElement("p");
+      replyDate.textContent = replyData["reply-date"];
+      replyDate.classList.add("reply-date");
+
+      replyContentDiv.appendChild(replyImage);
+      replyContentDiv.appendChild(nameElement);
+      replyContentDiv.appendChild(replyDate);
+
+      const textReplyDiv = document.createElement("div");
+      textReplyDiv.classList.add("text-reply");
+
+      const replyTextElement = document.createElement("p");
+      replyTextElement.textContent = replyData["reply-text"];
+      replyTextElement.classList.add("reply-text");
+      textReplyDiv.appendChild(replyTextElement);
+
+      replyContainer.appendChild(replyContentDiv);
+      replyContainer.appendChild(textReplyDiv);
+      usersReplyForm.appendChild(replyContainer);
+    });
+
+    const replyForm = document.createElement("div");
+    replyForm.classList.add("reply__form");
+
+    const replyInput = document.createElement("input");
+    replyInput.type = "text";
+    replyInput.placeholder = "¡Comenta algo!";
+    replyForm.appendChild(replyInput);
+
+    const replyButton = document.createElement("button");
+    replyButton.classList.add("reply-btn");
+    replyButton.textContent = "Comenta";
+    replyButton.addEventListener("click", addReply);
+    replyForm.appendChild(replyButton);
+    postContainer.appendChild(replyForm);
+    wallContainer.prepend(postContainer);
+  });
+}
+
 function loadForumPosts(filename) {
 
   console.log("Obteniendo JSON");
