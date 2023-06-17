@@ -231,7 +231,7 @@ function visualizeCommentedPosts() {
       }
     }
     sendJsonToApi(JSON.stringify(approvedPosts, currentUser+ ".json"))
-
+    location.reloa()
   }
 }
 
