@@ -291,10 +291,6 @@ function transformDates(date) {
   return (monthsToString[dateArray[1]] + ", " + dateArray[0])
 }
 
-function reloadPage() {
-    location.reload();
-
-
 const cyrb53 = (str, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
   for (let i = 0, ch; i < str.length; i++) {
@@ -532,8 +528,6 @@ function getJsonFromApi(filename) {
     success: function(jsonFile) {
       console.log("Archivo JSON cargado!")
       sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
-      reloadPage()
-      reloadPage()
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
@@ -561,5 +555,5 @@ console.log(sessionStorage.getItem("currentUser") == undefined)
     if (sessionStorage.getItem("currentUser") == undefined){
         window.location.href = "../../sections/login.html";
     }
-}}
+}
 
