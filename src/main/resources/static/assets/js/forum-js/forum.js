@@ -99,246 +99,246 @@ function addPost(event){
 /*-------------------------Cambios Erick Fin------------------------------------*/
 
 
-// Función para manejar el evento de clic en el botón "Agregar publicación"
-function onMessageReceived(payload) {
-  var message = JSON.parse(payload.body);
-
-  // Crear un contenedor para la publicación
-  const postContainer = document.createElement("div");
-  postContainer.classList.add("post-container");
-  // Generar un nuevo postDataId único
-  const postDataId = allData.postData.length + 1;
-  postContainer.setAttribute("data-postId", postDataId);
-
-  // Crear un contenedor para el encabezado de la publicación
-  const postHeaderUser = document.createElement("div");
-  postHeaderUser.classList.add("general-post-info");
-
-  // Crear un div para el contenido de la publicación
-  const postContentDiv = document.createElement("div");
-  postContentDiv.classList.add("post-content");
-
-  // Crear un elemento de imagen para la publicación
-  const postImage = document.createElement("img");
-  postImage.src = message.profilepicture;
-  postImage.classList.add("rounded-circle");
-  postImage.classList.add("me-3");
-  postImage.classList.add("shadow-1-strong");
-  postImage.style.width = "60px";
-  postImage.style.height = "60px";
-
-  const nameElement = document.createElement("h3");
-  nameElement.textContent = message.sender;
-  nameElement.classList.add("post-name");
-  nameElement.setAttribute("data-userEmail",message.email);
-
-  handleMouseEvents(nameElement);
-
-  // Crear un elemento para la fecha
-  const postDate = document.createElement("p");
-  const currentDate = new Date();
-  postDate.textContent = currentDate.toLocaleDateString();
-  postDate.classList.add("post-date");
-
-  postContentDiv.appendChild(postImage);
-  postContentDiv.appendChild(nameElement);
-  postContentDiv.appendChild(postDate);
-
-  postHeaderUser.appendChild(postContentDiv);
-
-  // Crear un div para el texto de la publicación
-  const postTextDiv = document.createElement("div");
-  postTextDiv.classList.add("posttextdiv");
-
-  // Crear un elemento para el texto de la publicación
-  const postTextElement = document.createElement("p");
-  postTextElement.textContent = message.content;
-  postTextElement.classList.add("post-text");
-  postTextDiv.appendChild(postTextElement);
-
-  postHeaderUser.appendChild(postTextDiv);
-
-  postContainer.appendChild(postHeaderUser);
-
-  // Crear un contenedor para las respuestas de los usuarios
-  const listOfAnswer = document.createElement("div");
-  listOfAnswer.classList.add("users_reply__form");
-
-  // Crear un formulario para las respuestas
-  const replyForm = document.createElement("div");
-  replyForm.classList.add("reply__form");
-
-  // Crear un campo de entrada para las respuestas
-  const replyInput = document.createElement("input");
-  replyInput.type = "text";
-  replyInput.placeholder = "¡Comenta algo!";
-  replyForm.appendChild(replyInput);
-
-  // Crear un botón para enviar las respuestas
-  const replyButton = document.createElement("button");
-  replyButton.classList.add("reply-btn");
-  replyButton.textContent = "Comenta";
-  replyButton.addEventListener("click", addReply);
-  replyForm.appendChild(replyButton);
-
-  postContainer.appendChild(listOfAnswer);
-  postContainer.appendChild(replyForm);
-
-  const wallContainer = document.querySelector(".wall__container");
-  wallContainer.prepend(postContainer);
-
-  document.getElementById("post-input").value = "";
-
-  const postHeader = {
-    postHeaderId: 1,
-    "post-header-name": nameElement.textContent,
-    "post-header-date": postDate.textContent,
-    "post-header-text": message.content,
-    "post-header-pp": message.profilepicture,
-    "userEmail": message.email
-  };
-
-  const postData = {
-    postDataId,
-    postHeader: [postHeader],
-    replyData: [],
-  };
-
-  allData.postData.push(postData);
-
-  addPostToUserData("post",postData);
-
-  console.clear();
-
-  //Guardar en Local Storage
-  appendObjectToLocalStorage(allData);
-}
-
-//-----------------------------------Inicio de cambios en addReply
-function addReply(event){
-  const replyInput = event.target.parentNode.querySelector("input[type='text']");
-  const replyText = replyInput.value.trim();
-  const replyInputParent = event.target.parentNode.closest(".post-container");
-  const replyId = replyInputParent.dataset.postid;
-  console.log(replyId);
-  if (replyText === "") {
-    alert("Por favor comenta algo.");
-    return;
-  }
-
-    if(replyText && stompClient) {
-        var chatMessage = {
-            sender: username_connect,
-            content: replyText,
-            postId:replyId,
-            profilepicture:username_profilepicture,
-            email:user_email,
-            type: 'CHAT'
-        };
-        stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
-        replyText.value = '';
-    }
-    event.preventDefault();
-}
-
-function onMessageReceived_Reply(payload) {
-  var message = JSON.parse(payload.body);
-
-  // Create a containter for the reply
-  const replyContainer = document.createElement("div");
-  replyContainer.classList.add("reply-container");
-
-  // Create the reply content
-  const replyContentDiv = document.createElement("div");
-  replyContentDiv.classList.add("reply-content");
-
-  const replyImage = document.createElement("img");
-  replyImage.src = message.profilepicture;
-  replyImage.classList.add("rounded-circle");
-  replyImage.classList.add("me-3");
-  replyImage.classList.add("shadow-1-strong");
-  replyImage.style.width = "60px";
-  replyImage.style.height = "60px";
-
-  const nameElement = document.createElement("h3");
-  nameElement.textContent = message.sender;
-  nameElement.classList.add("reply-name");
-  nameElement.setAttribute("data-userEmail",message.email);
-
-  handleMouseEvents(nameElement);
-
-  const replyDate = document.createElement("p");
-  const currentDate = new Date();
-  replyDate.textContent = currentDate.toLocaleDateString();
-  replyDate.classList.add("reply-date");
-
-  replyContentDiv.appendChild(replyImage);
-  replyContentDiv.appendChild(nameElement);
-  replyContentDiv.appendChild(replyDate);
-
-  const textReplyDiv = document.createElement("div");
-  textReplyDiv.classList.add("text-reply");
-
-  const replyTextElement = document.createElement("p");
-  replyTextElement.textContent = message.content;
-  replyTextElement.classList.add("reply-text");
-  textReplyDiv.appendChild(replyTextElement);
-
-  replyContainer.appendChild(replyContentDiv);
-  replyContainer.appendChild(textReplyDiv);
-
-  const postContainer = document.querySelector(`.post-container[data-postid="${message.postId}"]`);
-  if (postContainer) {
-    const listOfAnswer = postContainer.querySelector(".users_reply__form");
-    listOfAnswer.appendChild(replyContainer);
-  }
-
-  const replyForm = postContainer.querySelector(".reply__form");
-  const inputElement = replyForm.querySelector("input[type='text']");
-  inputElement.value = "";
-
-  const postId = parseInt(postContainer.getAttribute("data-postId")); //No mover de aquí.Trae el id del post
-
-  let replyId = 0;
-
-  if (Object.entries(allData.postData[postId - 1].replyData) === 0) {
-    replyId = 1;
-  } else {
-    replyId = allData.postData[postId - 1].replyData.length + 1;
-  }
-
-  const replyData = {
-    replyId,
-    postHeaderId: parseInt(postContainer.getAttribute("data-postId")),
-    "reply-name": nameElement.textContent,
-    "reply-date": replyDate.textContent,
-    "reply-text": message.content,
-    "reply-pp": message.profilepicture,
-    "userEmail": message.email
-  };
-
-  const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
-  postData.replyData.push(replyData);
-
-  addPostToUserData("reply", postData);
-
-  // Save the updated data to local storage
-  appendObjectToLocalStorage(allData);
-}
-
-/*---------------Fin de cambios en addReply */
-
-// Add an event listener to the "Publicar" button
-const addPostButton = document.getElementById("add-post-btn");
-addPostButton.addEventListener("click", addPost);
-
-// Add event listener for Enter keypress on the post-input field
-const postInput = document.getElementById("post-input");
-postInput.addEventListener("keypress", function (event) {
-  if (event.key === "Enter") {
-    addPost();
-  }
-});
+// // Función para manejar el evento de clic en el botón "Agregar publicación"
+// function onMessageReceived(payload) {
+//   var message = JSON.parse(payload.body);
+//
+//   // Crear un contenedor para la publicación
+//   const postContainer = document.createElement("div");
+//   postContainer.classList.add("post-container");
+//   // Generar un nuevo postDataId único
+//   const postDataId = allData.postData.length + 1;
+//   postContainer.setAttribute("data-postId", postDataId);
+//
+//   // Crear un contenedor para el encabezado de la publicación
+//   const postHeaderUser = document.createElement("div");
+//   postHeaderUser.classList.add("general-post-info");
+//
+//   // Crear un div para el contenido de la publicación
+//   const postContentDiv = document.createElement("div");
+//   postContentDiv.classList.add("post-content");
+//
+//   // Crear un elemento de imagen para la publicación
+//   const postImage = document.createElement("img");
+//   postImage.src = message.profilepicture;
+//   postImage.classList.add("rounded-circle");
+//   postImage.classList.add("me-3");
+//   postImage.classList.add("shadow-1-strong");
+//   postImage.style.width = "60px";
+//   postImage.style.height = "60px";
+//
+//   const nameElement = document.createElement("h3");
+//   nameElement.textContent = message.sender;
+//   nameElement.classList.add("post-name");
+//   nameElement.setAttribute("data-userEmail",message.email);
+//
+//   handleMouseEvents(nameElement);
+//
+//   // Crear un elemento para la fecha
+//   const postDate = document.createElement("p");
+//   const currentDate = new Date();
+//   postDate.textContent = currentDate.toLocaleDateString();
+//   postDate.classList.add("post-date");
+//
+//   postContentDiv.appendChild(postImage);
+//   postContentDiv.appendChild(nameElement);
+//   postContentDiv.appendChild(postDate);
+//
+//   postHeaderUser.appendChild(postContentDiv);
+//
+//   // Crear un div para el texto de la publicación
+//   const postTextDiv = document.createElement("div");
+//   postTextDiv.classList.add("posttextdiv");
+//
+//   // Crear un elemento para el texto de la publicación
+//   const postTextElement = document.createElement("p");
+//   postTextElement.textContent = message.content;
+//   postTextElement.classList.add("post-text");
+//   postTextDiv.appendChild(postTextElement);
+//
+//   postHeaderUser.appendChild(postTextDiv);
+//
+//   postContainer.appendChild(postHeaderUser);
+//
+//   // Crear un contenedor para las respuestas de los usuarios
+//   const listOfAnswer = document.createElement("div");
+//   listOfAnswer.classList.add("users_reply__form");
+//
+//   // Crear un formulario para las respuestas
+//   const replyForm = document.createElement("div");
+//   replyForm.classList.add("reply__form");
+//
+//   // Crear un campo de entrada para las respuestas
+//   const replyInput = document.createElement("input");
+//   replyInput.type = "text";
+//   replyInput.placeholder = "¡Comenta algo!";
+//   replyForm.appendChild(replyInput);
+//
+//   // Crear un botón para enviar las respuestas
+//   const replyButton = document.createElement("button");
+//   replyButton.classList.add("reply-btn");
+//   replyButton.textContent = "Comenta";
+//   replyButton.addEventListener("click", addReply);
+//   replyForm.appendChild(replyButton);
+//
+//   postContainer.appendChild(listOfAnswer);
+//   postContainer.appendChild(replyForm);
+//
+//   const wallContainer = document.querySelector(".wall__container");
+//   wallContainer.prepend(postContainer);
+//
+//   document.getElementById("post-input").value = "";
+//
+//   const postHeader = {
+//     postHeaderId: 1,
+//     "post-header-name": nameElement.textContent,
+//     "post-header-date": postDate.textContent,
+//     "post-header-text": message.content,
+//     "post-header-pp": message.profilepicture,
+//     "userEmail": message.email
+//   };
+//
+//   const postData = {
+//     postDataId,
+//     postHeader: [postHeader],
+//     replyData: [],
+//   };
+//
+//   allData.postData.push(postData);
+//
+//   addPostToUserData("post",postData);
+//
+//   console.clear();
+//
+//   //Guardar en Local Storage
+//   appendObjectToLocalStorage(allData);
+// }
+//
+// //-----------------------------------Inicio de cambios en addReply
+// function addReply(event){
+//   const replyInput = event.target.parentNode.querySelector("input[type='text']");
+//   const replyText = replyInput.value.trim();
+//   const replyInputParent = event.target.parentNode.closest(".post-container");
+//   const replyId = replyInputParent.dataset.postid;
+//   console.log(replyId);
+//   if (replyText === "") {
+//     alert("Por favor comenta algo.");
+//     return;
+//   }
+//
+//     if(replyText && stompClient) {
+//         var chatMessage = {
+//             sender: username_connect,
+//             content: replyText,
+//             postId:replyId,
+//             profilepicture:username_profilepicture,
+//             email:user_email,
+//             type: 'CHAT'
+//         };
+//         stompClient.send('/app/chat.reply', {}, JSON.stringify(chatMessage));
+//         replyText.value = '';
+//     }
+//     event.preventDefault();
+// }
+//
+// function onMessageReceived_Reply(payload) {
+//   var message = JSON.parse(payload.body);
+//
+//   // Create a containter for the reply
+//   const replyContainer = document.createElement("div");
+//   replyContainer.classList.add("reply-container");
+//
+//   // Create the reply content
+//   const replyContentDiv = document.createElement("div");
+//   replyContentDiv.classList.add("reply-content");
+//
+//   const replyImage = document.createElement("img");
+//   replyImage.src = message.profilepicture;
+//   replyImage.classList.add("rounded-circle");
+//   replyImage.classList.add("me-3");
+//   replyImage.classList.add("shadow-1-strong");
+//   replyImage.style.width = "60px";
+//   replyImage.style.height = "60px";
+//
+//   const nameElement = document.createElement("h3");
+//   nameElement.textContent = message.sender;
+//   nameElement.classList.add("reply-name");
+//   nameElement.setAttribute("data-userEmail",message.email);
+//
+//   handleMouseEvents(nameElement);
+//
+//   const replyDate = document.createElement("p");
+//   const currentDate = new Date();
+//   replyDate.textContent = currentDate.toLocaleDateString();
+//   replyDate.classList.add("reply-date");
+//
+//   replyContentDiv.appendChild(replyImage);
+//   replyContentDiv.appendChild(nameElement);
+//   replyContentDiv.appendChild(replyDate);
+//
+//   const textReplyDiv = document.createElement("div");
+//   textReplyDiv.classList.add("text-reply");
+//
+//   const replyTextElement = document.createElement("p");
+//   replyTextElement.textContent = message.content;
+//   replyTextElement.classList.add("reply-text");
+//   textReplyDiv.appendChild(replyTextElement);
+//
+//   replyContainer.appendChild(replyContentDiv);
+//   replyContainer.appendChild(textReplyDiv);
+//
+//   const postContainer = document.querySelector(`.post-container[data-postid="${message.postId}"]`);
+//   if (postContainer) {
+//     const listOfAnswer = postContainer.querySelector(".users_reply__form");
+//     listOfAnswer.appendChild(replyContainer);
+//   }
+//
+//   const replyForm = postContainer.querySelector(".reply__form");
+//   const inputElement = replyForm.querySelector("input[type='text']");
+//   inputElement.value = "";
+//
+//   const postId = parseInt(postContainer.getAttribute("data-postId")); //No mover de aquí.Trae el id del post
+//
+//   let replyId = 0;
+//
+//   if (Object.entries(allData.postData[postId - 1].replyData) === 0) {
+//     replyId = 1;
+//   } else {
+//     replyId = allData.postData[postId - 1].replyData.length + 1;
+//   }
+//
+//   const replyData = {
+//     replyId,
+//     postHeaderId: parseInt(postContainer.getAttribute("data-postId")),
+//     "reply-name": nameElement.textContent,
+//     "reply-date": replyDate.textContent,
+//     "reply-text": message.content,
+//     "reply-pp": message.profilepicture,
+//     "userEmail": message.email
+//   };
+//
+//   const postData = allData.postData.find((post) => post.postDataId === postId); //Seleccionando el postData por su id
+//   postData.replyData.push(replyData);
+//
+//   addPostToUserData("reply", postData);
+//
+//   // Save the updated data to local storage
+//   appendObjectToLocalStorage(allData);
+// }
+//
+// /*---------------Fin de cambios en addReply */
+//
+// // Add an event listener to the "Publicar" button
+// const addPostButton = document.getElementById("add-post-btn");
+// addPostButton.addEventListener("click", addPost);
+//
+// // Add event listener for Enter keypress on the post-input field
+// const postInput = document.getElementById("post-input");
+// postInput.addEventListener("keypress", function (event) {
+//   if (event.key === "Enter") {
+//     addPost();
+//   }
+// });
 
 
 /*------------------------Animacion de los eventos del lado izquierdo------*/
