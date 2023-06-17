@@ -292,19 +292,8 @@ function transformDates(date) {
 }
 
 function reloadPage() {
-// The last "domLoading" Time //
-  var currentDocumentTimestamp =
-      new Date(performance.timing.domLoading).getTime();
-// Current Time //
-  var now = Date.now();
-// Ten Seconds //
-  var tenSec = 10 * 1000;
-// Plus Ten Seconds //
-  var plusTenSec = currentDocumentTimestamp + tenSec;
-  if (now > plusTenSec) {
     location.reload();
-  } else {}
-}
+
 
 const cyrb53 = (str, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
