@@ -528,6 +528,7 @@ function getJsonFromApi(filename) {
     success: function(jsonFile) {
       console.log("Archivo JSON cargado!")
       sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
+      location.reload()
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
