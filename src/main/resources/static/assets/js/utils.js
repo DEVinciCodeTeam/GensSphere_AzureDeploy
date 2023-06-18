@@ -559,6 +559,7 @@ function loadUserPosts(filename) {
   });
 }
 // ---------------------------------Forums -------------------------------------------
+function forumFunctionality(forumName) {
 let allData = { id: "Semana1", postData: [] };
 
 function handleMouseEvents(element) {
@@ -583,9 +584,9 @@ let postReplyIdCounter = 1;
 //Funcion para guardar la informacion en Local Storage.
 function appendObjectToLocalStorage(allData) {
   const element = allData;
-  localStorage.setItem("forum1Posts", JSON.stringify(element));
-  sessionStorage.setItem("forum1Posts", JSON.stringify(element));
-  updateForumObject("forum1Posts");
+  localStorage.setItem(forumName, JSON.stringify(element));
+  sessionStorage.setItem(forumName, JSON.stringify(element));
+  updateForumObject(forumName);
 }
 
 // Get the current user name from sessionStorage
@@ -654,7 +655,7 @@ function addPost(event){
   event.preventDefault();
 }
 
-if (document.location.pathname.includes("forum")) {
+
 // Función para manejar el evento de clic en el botón "Agregar publicación"
   function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
@@ -907,7 +908,7 @@ if (document.location.pathname.includes("forum")) {
 
 // Function to retrieve the information from local storage
   function getDataFromLocalStorage() {
-    const storedData = sessionStorage.getItem("forum1Posts");
+    const storedData = sessionStorage.getItem(forumName);
     return JSON.parse(storedData);
   }
 
@@ -1078,7 +1079,24 @@ if (document.location.pathname.includes("forum")) {
     const forumObject = sessionStorage.getItem(name);
     sendJsonToApi(forumObject, name + ".json")
   }
+
+  /*------------------------Animacion de los eventos del lado izquierdo------*/
+
+// Lista aparece en orden con a animación
+  const listItems = document.querySelectorAll(".list-animation");
+
+
+
+  document.addEventListener("DOMContentLoaded", showItems); // DOMContentLoaded = Al cargarse la pagina
+
+  /*--------------------Recuperar la inforamacion del local storage---------------*/
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadForumPosts(forumName + ".json")
+  });
+
 }
+
 // ------------------------------------------------------------------------------------
 
 function download(content, fileName, contentType) {
