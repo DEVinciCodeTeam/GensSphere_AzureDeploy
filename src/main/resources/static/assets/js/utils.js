@@ -580,7 +580,7 @@ function validateCurrentUser (){
 
 // ---------------------------------Forums -------------------------------------------
 function forumFunctionality(forumName) {
-let allData = { id: "Semana1", postData: [] };
+let allData = { id: "Semana" + forumName.slice(-1), postData: [] };
 
 function handleMouseEvents(element) {
   element.addEventListener("mouseenter", function() {
