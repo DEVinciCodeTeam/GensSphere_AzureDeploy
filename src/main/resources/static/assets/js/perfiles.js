@@ -15,18 +15,8 @@ if (friendProfileCheck != null){
 let currentUser;
 
 if (document.location.pathname.includes(PERFIL_EXTERNO)) {
-  // if (friendProfileCheck != null) {
-  //   if (sessionStorage.getItem(friendProfileCheck.userEmail.split(".")[0]) != undefined) {
-  //     visualizeUserPosts();
-  //     visualizeCommentedPosts();
-  //   }
-  // }
   currentUser = JSON.parse(sessionStorage.getItem("friendProfile"));
 } else {
-  // if (sessionStorage.getItem(getUserEmail().split(".")[0]) != undefined){
-  //   visualizeUserPosts();
-  //   visualizeCommentedPosts();
-  // }
   currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 }
 

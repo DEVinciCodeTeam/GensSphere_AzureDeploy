@@ -193,7 +193,7 @@ console.log("Entramos a visualize posts")
       }
     }
 
-    sendJsonToApi(JSON.stringify(approvedPosts, currentUser + ".json"))
+    sendJsonToApi(JSON.stringify(approvedPosts), currentUser + ".json")
 
   }
 }
@@ -230,7 +230,7 @@ function visualizeCommentedPosts() {
         break;
       }
     }
-    sendJsonToApi(JSON.stringify(approvedPosts, currentUser+ ".json"))
+    sendJsonToApi(JSON.stringify(approvedPosts), currentUser+ ".json")
   }
 }
 
