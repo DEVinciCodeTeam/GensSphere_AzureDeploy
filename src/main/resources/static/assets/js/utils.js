@@ -553,6 +553,7 @@ function loadUserPosts(filename) {
       sessionStorage.setItem(filename.split(".")[0], JSON.stringify(jsonFile))
       visualizeUserPosts();
       visualizeCommentedPosts();
+      spinner.style.display = "inline";
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("El archivo no existe")
