@@ -1,100 +1,100 @@
 validateCurrentUser();
 // getJsonFromApi("forum1Posts.json");
 // Objeto que almacena todos los objetos de datos creados dentro de las funciones
-let allData = { id: "Semana1", postData: [] };
-
-function handleMouseEvents(element) {
-  element.addEventListener("mouseenter", function() {
-    const temp = this.textContent;
-    this.textContent = this.getAttribute("data-userEmail");
-    this.setAttribute("data-userEmail", temp);
-  });
-
-  element.addEventListener("mouseleave", function() {
-    const temp = this.textContent;
-    this.textContent = this.getAttribute("data-userEmail");
-    this.setAttribute("data-userEmail", temp);
-  });
-}
-
-// Counter variables
-let postDataIdCounter = 1;
-let postHeaderIdCounter = 1;
-let postReplyIdCounter = 1;
-
-//Funcion para guardar la informacion en Local Storage.
-function appendObjectToLocalStorage(allData) {
-  const element = allData;
-  localStorage.setItem("forum1Posts", JSON.stringify(element));
-  sessionStorage.setItem("forum1Posts", JSON.stringify(element));
-  updateForumObject("forum1Posts");
-}
-
-// Get the current user name from sessionStorage
-const currentUser = sessionStorage.getItem("currentUser");
-const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
-const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
-const userEmail = currentUser ? JSON.parse(currentUser).userEmail : "Anonymous";
-
-//----------Funcion para conectar al Usuario al Socket
-var stompClient = null;
-
-function connect() {
-    username_connect = userName
-    username_profilepicture = `${API_URL}/files/`+userProfilePicture;
-    user_email = userEmail;
-    if(username_connect) {
-        var socket = new SockJS(`${API_URL}/websocket`);
-        //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, onConnected, onError);
-    }
-}
-
-function onConnected() {
-    // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
-
-    stompClient.subscribe('/topic/public/reply', onMessageReceived_Reply);
-
-}
-
-function onError(error) {
-    alert('No fue posible conectar con el WebSocket! Actualiza tu pagina e intenta nuevamente o entra en contacto con tu administrador.');
-}
-
-//--------------------Activar Sesion de Usuario---------------
-document.addEventListener("DOMContentLoaded", () => {
-  connect();
-});
-
-
-
-// Función para manejar el evento de clic en el botón "Agregar publicación"
-// Función para manejar el evento de clic en el botón "Publicar"
-
-function addPost(event){
-  const postInput = document.getElementById("post-input").value.trim();
-
-  if (postInput === "") {
-    alert("Favor de publicar algo.");
-    return;
-  }
-      if(postInput && stompClient) {
-          var chatMessage = {
-              sender: username_connect,
-              content: postInput,
-              profilepicture:username_profilepicture,
-              email:user_email,
-              type: 'CHAT'
-          };
-
-          stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
-
-      }
-      event.preventDefault();
-}
+// let allData = { id: "Semana1", postData: [] };
+//
+// function handleMouseEvents(element) {
+//   element.addEventListener("mouseenter", function() {
+//     const temp = this.textContent;
+//     this.textContent = this.getAttribute("data-userEmail");
+//     this.setAttribute("data-userEmail", temp);
+//   });
+//
+//   element.addEventListener("mouseleave", function() {
+//     const temp = this.textContent;
+//     this.textContent = this.getAttribute("data-userEmail");
+//     this.setAttribute("data-userEmail", temp);
+//   });
+// }
+//
+// // Counter variables
+// let postDataIdCounter = 1;
+// let postHeaderIdCounter = 1;
+// let postReplyIdCounter = 1;
+//
+// //Funcion para guardar la informacion en Local Storage.
+// function appendObjectToLocalStorage(allData) {
+//   const element = allData;
+//   localStorage.setItem("forum1Posts", JSON.stringify(element));
+//   sessionStorage.setItem("forum1Posts", JSON.stringify(element));
+//   updateForumObject("forum1Posts");
+// }
+//
+// // Get the current user name from sessionStorage
+// const currentUser = sessionStorage.getItem("currentUser");
+// const userName = currentUser ? JSON.parse(currentUser).userName : "Anonymous";
+// const userProfilePicture = currentUser ? JSON.parse(currentUser).userProfilePicture : "Anonymous";
+// const userEmail = currentUser ? JSON.parse(currentUser).userEmail : "Anonymous";
+//
+// //----------Funcion para conectar al Usuario al Socket
+// var stompClient = null;
+//
+// function connect() {
+//     username_connect = userName
+//     username_profilepicture = `${API_URL}/files/`+userProfilePicture;
+//     user_email = userEmail;
+//     if(username_connect) {
+//         var socket = new SockJS(`${API_URL}/websocket`);
+//         //var socket = new SockJS('https://testgensphere.up.railway.app/websocket');
+//         stompClient = Stomp.over(socket);
+//
+//         stompClient.connect({}, onConnected, onError);
+//     }
+// }
+//
+// function onConnected() {
+//     // Subscribe to the Public Topic
+//     stompClient.subscribe('/topic/public', onMessageReceived);
+//
+//     stompClient.subscribe('/topic/public/reply', onMessageReceived_Reply);
+//
+// }
+//
+// function onError(error) {
+//     alert('No fue posible conectar con el WebSocket! Actualiza tu pagina e intenta nuevamente o entra en contacto con tu administrador.');
+// }
+//
+// //--------------------Activar Sesion de Usuario---------------
+// document.addEventListener("DOMContentLoaded", () => {
+//   connect();
+// });
+//
+//
+//
+// // Función para manejar el evento de clic en el botón "Agregar publicación"
+// // Función para manejar el evento de clic en el botón "Publicar"
+//
+// function addPost(event){
+//   const postInput = document.getElementById("post-input").value.trim();
+//
+//   if (postInput === "") {
+//     alert("Favor de publicar algo.");
+//     return;
+//   }
+//       if(postInput && stompClient) {
+//           var chatMessage = {
+//               sender: username_connect,
+//               content: postInput,
+//               profilepicture:username_profilepicture,
+//               email:user_email,
+//               type: 'CHAT'
+//           };
+//
+//           stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
+//
+//       }
+//       event.preventDefault();
+// }
 
 /*-------------------------Cambios Erick Fin------------------------------------*/
 
