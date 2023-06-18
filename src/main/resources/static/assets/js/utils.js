@@ -558,6 +558,23 @@ function loadUserPosts(filename) {
 
   });
 }
+
+function download(content, fileName, contentType) {
+  var a = document.createElement("a");
+  var file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
+
+function validateCurrentUser (){
+  console.log("Entramos a curentUser")
+  console.log(sessionStorage.getItem("currentUser") == undefined)
+  if (sessionStorage.getItem("currentUser") == undefined){
+    window.location.href = "../../sections/login.html";
+  }
+}
+
 // ---------------------------------Forums -------------------------------------------
 function forumFunctionality(forumName) {
 let allData = { id: "Semana1", postData: [] };
@@ -1098,20 +1115,3 @@ function addPost(event){
 }
 
 // ------------------------------------------------------------------------------------
-
-function download(content, fileName, contentType) {
-  var a = document.createElement("a");
-  var file = new Blob([content], { type: contentType });
-  a.href = URL.createObjectURL(file);
-  a.download = fileName;
-  a.click();
-}
-
-function validateCurrentUser (){
-console.log("Entramos a curentUser")
-console.log(sessionStorage.getItem("currentUser") == undefined)
-    if (sessionStorage.getItem("currentUser") == undefined){
-        window.location.href = "../../sections/login.html";
-    }
-}
-
