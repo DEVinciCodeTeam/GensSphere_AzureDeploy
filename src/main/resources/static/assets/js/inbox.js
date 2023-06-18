@@ -170,7 +170,7 @@ async function addUser() {
   try {
     // Fetch user data from the API
     const response = await fetch(
-      "https://gensphere.azurewebsites.net/api/list"
+      `${API_URL}/api/list`
     );
     const users = await response.json();
 
@@ -207,7 +207,7 @@ async function addUser() {
       // Create a new chat item for the user
       const newChatItem = {
         name: userName,
-        imageSrc: "https://gensphere.azurewebsites.net/files/"+userProfilePicture,
+        imageSrc: `${API_URL}/files/`+userProfilePicture,
         messages: [],
       };
 

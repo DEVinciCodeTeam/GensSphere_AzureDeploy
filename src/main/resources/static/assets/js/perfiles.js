@@ -1,10 +1,13 @@
 validateCurrentUser();
-const spinner = document.getElementById("spinner")
-spinner.innerHTML = `<button class="btn btn-primary my-4" type="button" disabled>
+
+if (document.location.pathname.includes(PERFIL_EXTERNO) || document.location.pathname.includes(PERFIL_USUARIO)) {
+  const spinner = document.getElementById("spinner")
+  spinner.innerHTML = `<button class="btn btn-primary my-4" type="button" disabled>
    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
    Loading posts...
  </button>`;
-spinner.style.display = "none";
+  spinner.style.display = "inline";
+}
 
 const friendProfileCheck = JSON.parse(sessionStorage.getItem("friendProfile"));
 // getJsonFromApi(getUserEmail() + ".json")
